@@ -54,6 +54,7 @@ uploads/
 # Local database exports and backups
 /zipai_backup.sql
 /*_backup.sql
+/team-deploy/
 
 # Local delivery archives
 *.zip

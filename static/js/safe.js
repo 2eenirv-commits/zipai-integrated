@@ -324,6 +324,15 @@
     });
     appendWomenMarkers(houses, center, radiusMeters);
     if (!womenResult) return;
+    if (!houses.length) {
+      const coverage = data.coverage || '선택한 지역';
+      womenResult.innerHTML = renderTitle('women', '여성안전시설')
+        + '<p class="safety-card-subtitle">공식 여성안전시설</p>'
+        + '<p class="safe-api-message">' + escapeHtml(coverage)
+        + '는 현재 조회 가능한 공식 여성안전시설 자료가 없습니다.</p>'
+        + '<div class="public-card-guidance"><strong>안내 기준</strong><p>자료 미제공은 시설이 존재하지 않는다는 의미가 아니며, 제공기관의 공개 범위에 따라 달라질 수 있습니다.</p></div>';
+      return;
+    }
     const closest = houses.slice(0, 1);
     const remaining = houses.slice(1);
     const sourceDates = Array.from(new Set(houses.map(function (house) {
@@ -352,12 +361,11 @@ if (hasParcelLocker && !hasSafeHouse) {
       + '<p class="women-safe-intro">' + escapeHtml(facilityIntro) + '</p>'
       + '<p class="regional-safety-area">반경 ' + escapeHtml(String(data.radiusMeters)) + 'm · 가까운 순 '
       + escapeHtml(String(data.count)) + '곳</p>'
-      + (houses.length ? '<p class="women-safe-closest-label">가장 가까운 곳</p><div class="women-safe-house-list">' + closest.map(renderWomenHouse).join('') + '</div>'
-        + (remaining.length ? '<details class="safety-more women-safe-more"><summary>' + escapeHtml(String(remaining.length))
-          + '곳 더 보기</summary><div class="women-safe-house-list">' + remaining.map(renderWomenHouse).join('') + '</div></details>' : '')
-        : '<p class="safe-api-message">' + escapeHtml(data.message || '검색 반경 내 데이터가 없습니다.') + '</p>')
+      + '<p class="women-safe-closest-label">가장 가까운 곳</p><div class="women-safe-house-list">' + closest.map(renderWomenHouse).join('') + '</div>'
+      + (remaining.length ? '<details class="safety-more women-safe-more"><summary>' + escapeHtml(String(remaining.length))
+        + '곳 더 보기</summary><div class="women-safe-house-list">' + remaining.map(renderWomenHouse).join('') + '</div></details>' : '')
       + '<p class="regional-safety-note regional-safety-note-primary">'
-      + escapeHtml(sourceDates.length ? sourceDates.join(' / ') : (data.message || '공식 검증 좌표 기준')) + '</p>'
+      + escapeHtml(sourceDates.length ? sourceDates.join(' / ') : '공식 검증 좌표 기준') + '</p>'
       + '<div class="public-card-guidance"><strong>안내 기준</strong><p>공식 데이터 중 위치가 확인되거나 검증된 좌표만 표시합니다.<br>실제 운영 현황과 다를 수 있습니다.</p></div>';
   }
 

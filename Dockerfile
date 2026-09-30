@@ -14,6 +14,7 @@ FROM eclipse-temurin:21-jre
 WORKDIR /app
 
 COPY --from=builder /workspace/build/libs/*.jar /app/app.jar
+COPY index.html /app/index.html
 COPY templates /app/templates
 COPY static /app/static
 COPY rpa/lifestyle_ml /app/rpa/lifestyle_ml

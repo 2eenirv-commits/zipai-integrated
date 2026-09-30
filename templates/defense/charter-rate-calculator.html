@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko" id="pageTop">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="매매가와 선순위 채권을 반영한 전세가율 계산기">
+  <title>전세가율 계산기 | 집아이</title>
+  <link rel="stylesheet" href="../../static/css/board.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="../../static/css/footer.css?v=20260916-10">
+  <link rel="stylesheet" href="../../static/css/header.css?v=20260916-10">
+  <link rel="stylesheet" href="../../static/css/auth.css?v=20260916-10">
+  <script src="../../static/js/common-layout.js?v=20260916-10" defer></script>
+
+  <script src="../../static/js/auth.js?v=20260916-10" defer></script>
+</head>
+<body class="has-zipai-footer" data-page="calculator">
+       <div class="zipai-header"></div>
+
+  
+  
+  <main class="page-main">
+    <section class="page-hero calculator-hero"><div class="content-width"><p class="breadcrumb"><a href="/defense/result">사기방지</a><span>›</span>전세가율 계산</p><p class="eyebrow">JEONSE RATIO</p><h1>이 집의 보증금,<br>안전한 수준일까요?</h1><p>시세와 보증금을 입력하면 전세가율과 깡통전세 위험도를 알려드려요.</p></div></section>
+    <section class="section calculator-section"><div class="content-width calculator-grid">
+      <form class="panel calculator-form" id="calculatorForm">
+        <div class="panel-title"><div><p class="eyebrow">CALCULATOR</p><h2>주택 정보 입력</h2></div><button type="reset" class="reset-button">초기화</button></div>
+        <div class="input-group"><label for="salePrice">주택 매매 시세 <em>필수</em></label><div class="money-input"><input id="salePrice" name="salePrice" inputmode="numeric" autocomplete="off" placeholder="예: 50000" required><span>만원</span></div><small class="amount-korean" data-for="salePrice">금액을 입력해 주세요</small></div>
+        <div class="input-group"><label for="deposit">내 전세 보증금 <em>필수</em></label><div class="money-input"><input id="deposit" name="deposit" inputmode="numeric" autocomplete="off" placeholder="예: 35000" required><span>만원</span></div><small class="amount-korean" data-for="deposit">금액을 입력해 주세요</small></div>
+        <div class="input-group"><div class="label-with-help"><label for="seniorDebt">선순위 채권 금액 <span>선택</span></label><button type="button" class="help-button" data-tooltip="등기부등본 을구에서 근저당권의 채권최고액을 확인하세요." aria-label="선순위 채권 도움말">?</button></div><div class="money-input"><input id="seniorDebt" name="seniorDebt" inputmode="numeric" autocomplete="off" placeholder="없으면 0"><span>만원</span></div><small class="amount-korean" data-for="seniorDebt">없으면 0원으로 계산해요</small></div>
+        <div class="input-group"><label for="houseType">주택 유형 <span>선택</span></label><div class="select-wrap"><select id="houseType" name="houseType"><option value="apartment">아파트</option><option value="officetel">오피스텔</option><option value="villa">연립·다세대</option><option value="house">단독·다가구</option></select></div></div>
+        <button class="button button-primary button-full" type="submit">전세가율 계산하기</button>
+      </form>
+
+      <div class="result-column">
+        <article class="panel ratio-result empty" id="ratioResult">
+          <div class="empty-calculator" id="emptyCalculator"><div class="calculator-symbol">%</div><h2>금액을 입력해 주세요</h2><p>계산 결과와 위험도별 행동 가이드가<br>이곳에 표시됩니다.</p></div>
+          <div class="calculated-content" id="calculatedContent" hidden>
+            <p class="eyebrow">계산 결과</p><div class="ratio-number"><strong id="ratioNumber">0</strong><span>%</span></div><span class="status-badge" id="ratioBadge">안전</span><h2 id="ratioTitle">비교적 안전한 수준이에요</h2><p id="ratioDescription"></p>
+            <div class="ratio-scale"><div class="scale-labels"><span>안전</span><span>주의</span><span>위험</span></div><div class="scale-track"><i id="scaleMarker"></i></div><div class="scale-values"><span>0%</span><span>70%</span><span>80%</span><span>100%+</span></div></div>
+            <dl class="calculation-detail"><div><dt>매매 시세</dt><dd id="salePriceResult">0만원</dd></div><div><dt>보증금 + 선순위 채권</dt><dd id="totalDebtResult">0만원</dd></div><div><dt>계산식</dt><dd>(보증금 + 선순위 채권) ÷ 매매가 × 100</dd></div></dl>
+            <button type="button" class="text-button" id="saveRatio">이 결과를 안전 진단에 저장하기</button>
+          </div>
+        </article>
+        <article class="info-box"><span class="info-icon">i</span><div><h3>전세가율은 왜 중요한가요?</h3><p>전세가율이 높을수록 집이 경매에 넘어갔을 때 보증금을 전부 돌려받지 못할 가능성이 커집니다. 지역과 주택 유형에 따라 적정 비율은 달라질 수 있어요.</p></div></article>
+      </div>
+    </div></section>
+  </main>
+  <footer class="zipai-footer"></footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="../../static/js/common.js"></script><script src="../../static/js/calculator.js"></script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ko" id="pageTop">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ZipAI 지역 공공 안전정보 페이지">
+  <title>ZipAI | 지역 공공 안전정보</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="../../static/css/auth.css">
+  <script src="../../static/js/auth.js?v=20260916-10" defer></script>
+  <script src="../../static/js/common-layout.js?v=20260916-10" defer></script>
+  <script src="../../static/js/safe.js?v=20260928-1" defer></script>
+  <link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../static/css/common.css">
+  <link rel="stylesheet" href="../../static/css/header.css">
+  <link rel="stylesheet" href="../../static/css/footer.css">
+  <link rel="stylesheet" href="../../static/css/safe.css">
+</head>
+<body class="has-zipai-footer">
+  <div id="top" class="zipai-page public-safety-page">
+    <div class="zipai-header"></div>
+
+    <main class="safe-page-main">
+      <section class="public-safety-hero">
+        <div class="zipai-container">
+          <p class="safe-eyebrow">PUBLIC SAFETY DATA</p>
+          <h1>지역 공공 안전정보</h1>
+          <p>우리 지역의 안전 관련 공공데이터를 한눈에 확인하세요.</p>
+        </div>
+      </section>
+
+      <section class="zipai-container public-safety-content">
+        <section class="zipai-card public-safety-search" aria-label="공공 안전정보 지역 검색">
+          <div>
+            <h2>지역 조회</h2>
+            <p>지역을 검색하면 공식 지역안전지수·범죄 통계와 주변 여성안전시설을 함께 확인합니다.</p>
+          </div>
+          <form class="safety-search-form public-safety-search-form" action="#" method="get" data-auto-analyze="true">
+            <input type="checkbox" name="regional-safety" value="regional" checked hidden>
+            <input type="checkbox" name="crime-statistics" value="crime-statistics" checked hidden>
+            <input type="checkbox" name="women-safe-house" value="women-safe-house" checked hidden>
+            <div class="safety-field public-safety-query">
+              <label for="safety-keyword">지역 또는 매물명</label>
+              <div class="safety-input-wrap">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                <input id="safety-keyword" name="keyword" type="search" value="역삼동" placeholder="예: 서울특별시 강남구 역삼동">
+              </div>
+            </div>
+            <div class="safety-field public-safety-radius">
+              <label for="safety-radius">분석 반경</label>
+              <select id="safety-radius" name="radius">
+                <option>500m</option>
+                <option>1km</option>
+                <option>2km</option>
+              </select>
+            </div>
+            <div class="safety-region-row public-safety-region-row" aria-label="공공 안전정보 지역 선택">
+              <div class="safety-field">
+                <label for="safety-sido">시·도</label>
+                <select id="safety-sido" name="sido">
+                  <option value="">전체 지역</option>
+                  <option value="서울특별시">서울특별시</option>
+                  <option value="경기도">경기도</option>
+                </select>
+              </div>
+              <div class="safety-field">
+                <label for="safety-region">관심지역</label>
+                <select id="safety-region" name="region">
+                  <option value="">전체 시·군·구</option>
+                </select>
+              </div>
+            </div>
+            <div class="safety-control-actions">
+              <button class="zipai-btn zipai-btn-primary" type="submit">공공정보 조회</button>
+              <button class="zipai-btn zipai-btn-muted" type="reset" aria-label="검색 초기화"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i></button>
+            </div>
+          </form>
+        </section>
+
+        <section class="safety-public-information public-safety-information" aria-label="지역 공공 안전정보 결과">
+          <div class="safety-public-grid">
+            <section class="regional-safety-result public-safety-card" aria-live="polite" aria-label="지역안전지수 결과">
+              <h2 class="safety-title-with-icon"><span class="safety-title-icon"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i></span>지역안전지수</h2>
+              <p class="safe-api-message">지역안전지수를 불러오는 중입니다.</p>
+            </section>
+            <section class="regional-safety-result crime-statistics-result public-safety-card" aria-live="polite" aria-label="경찰 관할 5대범죄 통계 결과">
+              <h2 class="safety-title-with-icon"><span class="safety-title-icon"><i class="fa-solid fa-chart-column" aria-hidden="true"></i></span>5대범죄 현황</h2>
+              <p class="safe-api-message">5대범죄 통계를 불러오는 중입니다.</p>
+            </section>
+            <section class="regional-safety-result women-safe-house-result public-safety-card" aria-live="polite" aria-label="주변 여성안전시설 결과">
+              <h2 class="safety-title-with-icon"><span class="safety-title-icon"><i class="fa-solid fa-house-circle-check" aria-hidden="true"></i></span>여성안전시설</h2>
+              <p class="safe-api-message">여성안전시설을 불러오는 중입니다.</p>
+            </section>
+          </div>
+        </section>
+
+        <aside class="public-safety-notice" aria-label="공공 안전정보 공통 안내">
+          <h2 class="safety-title-with-icon safety-title-notice"><span class="safety-title-icon"><i class="fa-solid fa-circle-info" aria-hidden="true"></i></span>공공정보 이용 안내</h2>
+          <p>·지역안전지수/5대범죄 현황/여성안전시설은 지역의 안전 상황을 참고하기 위한 공공정보입니다.</p>
+          <p>·세 정보는 안전 인프라 점수 계산에는 포함되지 않습니다.</p>
+          <p>·각 데이터는 제공기관에 따라 기준연도/기준일/집계범위가 다를 수 있습니다.</p>
+        </aside>
+      </section>
+    </main>
+
+    <footer class="zipai-footer"></footer>
+    <a class="top-button" href="#pageTop" aria-label="맨 위로 이동"><i class="fa-solid fa-arrow-up" aria-hidden="true"></i></a>
+  </div>
+</body>
+</html>

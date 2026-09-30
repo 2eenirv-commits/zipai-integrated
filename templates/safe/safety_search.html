@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="ZipAI 안전도 검색 페이지" name="description"/>
+<title>ZipAI | 안전도 검색</title>
+<link href="../static/images/favicon.svg" rel="icon" type="image/svg+xml"/>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet"/>
+<link href="../../static/css/common.css" rel="stylesheet"/>
+<link href="../../static/css/header.css?v=20260916-10" rel="stylesheet"/>
+<link href="../../static/css/footer.css?v=20260916-10" rel="stylesheet"/>
+<link href="../../static/css/safe.css" rel="stylesheet"/>
+<script defer="" src="../../static/js/safe.js"></script><script src="../../static/js/auth.js?v=20260916-10" defer></script>
+</head>
+<body>
+<div class="zipai-page" id="top">
+<div class="zipai-header"></div>
+
+<main class="safe-page-main">
+<section class="safety-hero">
+<div class="zipai-container safety-hero-grid">
+<div>
+<span class="safety-eyebrow"><i aria-hidden="true" class="fa-solid fa-location-crosshairs"></i> ZipAI 안전도</span>
+<h1>거주 전 안전도를<br/>지도에서 바로<span class="safe-mobile-break"></span> 확인하세요</h1>
+<p>CCTV·치안시설·비상벨·보안등과 공식 지역안전·범죄·여성안전 정보를 한곳에서 확인하세요.</p>
+<div class="safe-hero-actions">
+<a class="safe-link-button primary" href="#safety-search"><i aria-hidden="true" class="fa-solid fa-magnifying-glass-location"></i> 안전도 검색하기</a>
+</div>
+<div aria-label="안전도 요약" class="safety-summary">
+<div class="safety-summary-item">
+<strong>-</strong>
+<span>안전 인프라 점수</span>
+</div>
+<div class="safety-summary-item">
+<strong>-</strong>
+<span>반경 내 선택 시설</span>
+</div>
+<div class="safety-summary-item">
+<strong>-</strong>
+<span>CCTV·비상벨 지점</span>
+</div>
+</div>
+</div>
+<div aria-label="안전도 지도 미리보기" class="zipai-card safety-preview">
+<div class="safety-preview-panel">
+<div>
+<strong>검색 지역</strong>
+<span>지역을 검색하면 안전도 분석 결과가 표시됩니다.</span>
+</div>
+<div class="safety-preview-score">-</div>
+</div>
+</div>
+</div>
+</section>
+<section class="zipai-container safe-section" id="safety-search">
+<div class="safe-section-heading">
+<div>
+<p class="safe-eyebrow">SAFETY SEARCH</p>
+<h2>분석 조건 입력</h2>
+<p>지역과 반경을 정하면 안전 지표를 바로 비교할 수 있습니다.</p>
+</div>
+</div>
+<div class="safe-search-layout">
+<aside aria-label="안전도 검색 조건" class="zipai-card safety-control-panel">
+<div class="safety-panel-head">
+<h2>안전도 검색</h2>
+<span><i aria-hidden="true" class="fa-solid fa-circle-check"></i> 실시간 분석</span>
+</div>
+<form action="#" class="safety-search-form" method="get">
+<div class="safety-field">
+<label for="safety-keyword">지역 또는 매물명</label>
+<div class="safety-input-wrap">
+<i aria-hidden="true" class="fa-solid fa-magnifying-glass"></i>
+<input id="safety-keyword" name="keyword" placeholder="지역, 지하철역, 매물명 검색" type="search"/>
+</div>
+</div>
+<div class="row g-2">
+<div class="col-12">
+<div class="safety-field">
+<label for="safety-radius">분석 반경</label>
+<select id="safety-radius" name="radius">
+<option>500m</option>
+<option>1km</option>
+<option>2km</option>
+</select>
+</div>
+</div>
+</div>
+<div aria-label="안전도 분석 항목" class="safety-filter-grid">
+<label class="safety-check" data-mobile-label="지역안전"><input checked="" name="regional-safety" type="checkbox" value="regional"/> 지역안전</label>
+<label class="safety-check" data-mobile-label="5대범죄"><input checked="" name="crime-statistics" type="checkbox" value="crime-statistics"/> 5대범죄 현황</label>
+<label class="safety-check" data-mobile-label="여성안심"><input checked="" name="women-safe-house" type="checkbox" value="women-safe-house"/> 여성안전시설</label>
+<label class="safety-check" data-mobile-label="치안시설"><input checked="" name="safety-feature" type="checkbox" value="police"/> 치안시설</label>
+<label class="safety-check" data-mobile-label="비상벨·보안등"><input checked="" name="safety-feature" type="checkbox" value="safety"/> 안전 비상벨·보안등</label>
+<label class="safety-check" data-mobile-label="CCTV"><input checked="" name="safety-feature" type="checkbox" value="cctv"/> CCTV 여부</label>
+</div>
+<div class="safety-control-actions">
+<button class="zipai-btn zipai-btn-primary" type="submit">
+<i aria-hidden="true" class="fa-solid fa-shield-halved"></i>
+                분석하기
+              </button>
+<button class="zipai-btn zipai-btn-muted" type="reset">
+<i aria-hidden="true" class="fa-solid fa-rotate-left"></i>
+                초기화
+              </button>
+</div>
+</form>
+<section aria-label="지역안전지수 결과" aria-live="polite" class="regional-safety-result">
+<h2>지역안전지수</h2>
+<p class="safe-api-message">지역안전 항목을 선택하고 분석해 주세요.</p>
+</section>
+<section aria-label="경찰 관할 5대범죄 통계 결과" aria-live="polite" class="regional-safety-result crime-statistics-result">
+<h2>5대범죄 현황</h2>
+<p class="safe-api-message">5대범죄 현황 항목을 선택하고 분석해 주세요.</p>
+</section>
+<section aria-label="주변 여성안전시설 결과" aria-live="polite" class="regional-safety-result women-safe-house-result">
+<h2>여성안전시설</h2>
+<p class="safe-api-message">여성안전시설 항목을 선택하고 분석해 주세요.</p>
+</section>
+</aside>
+<div aria-label="검색 결과 안내" class="safe-search-guide">
+<article class="safe-mini-result">
+<div>
+<h3>분석 대기</h3>
+<p>지역을 검색하고 분석하기를 눌러 주세요.</p>
+</div>
+</article>
+<article class="safe-guide-card">
+<span class="safe-card-icon"><i aria-hidden="true" class="fa-solid fa-list-check"></i></span>
+<h3>검색 후 이렇게 확인하세요</h3>
+<p>점수만 보지 말고 생활 동선과 야간 이동 경로를 함께 비교하면 더 정확합니다.</p>
+<ul class="safe-guide-list">
+<li><span>01</span><div><strong>집 주변 반경 선택</strong><small>도보 5~15분 생활권에 맞춰 500m 또는 1km를 선택하세요.</small></div></li>
+<li><span>02</span><div><strong>안전시설 분포 확인</strong><small>공공 CCTV, 치안시설, 비상벨·보안등의 위치와 거리를 확인하세요.</small></div></li>
+<li><span>03</span><div><strong>치안시설 거리 비교</strong><small>비상벨, CCTV, 지구대 접근성이 낮으면 방문 시간을 조정하세요.</small></div></li>
+</ul>
+<div class="safe-action-row">
+<a class="safe-link-button primary" href="/safe/map">지도에서 보기</a>
+</div>
+</article>
+</div>
+</div>
+</section>
+</main>
+
+</div>
+<script src="../../static/js/common-layout.js?v=20260916-10" defer></script>
+
+<footer class="zipai-footer"></footer>
+</body>
+</html>

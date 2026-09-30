@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko" id="pageTop">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="내 전세계약의 위험 요소를 한눈에 확인하는 집아이 사기방지 결과 화면">
+  <title>사기방지 결과 | 집아이</title>
+  <link rel="stylesheet" href="../../static/css/board.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="../../static/css/footer.css?v=20260916-10">
+  <link rel="stylesheet" href="../../static/css/header.css?v=20260916-10">
+  <link rel="stylesheet" href="../../static/css/auth.css?v=20260916-10">
+  <script src="../../static/js/common-layout.js?v=20260916-10" defer></script>
+
+  <script src="../../static/js/auth.js?v=20260916-10" defer></script>
+</head>
+<body class="has-zipai-footer" data-page="result">
+       <div class="zipai-header"></div>
+
+  
+
+  
+
+  <main>
+    <section class="hero hero-result">
+      <div class="content-width hero-content">
+        <div>
+          <p class="eyebrow">전세사기 예방 안전 진단</p>
+          <h1>계약 전, 위험 신호부터<br>꼼꼼하게 확인하세요</h1>
+          <p class="hero-description">체크리스트와 전세가율 결과를 바탕으로<br class="desktop-only"> 내 계약의 위험 요소를 한눈에 알려드려요.</p>
+          <a class="button button-primary" href="/defense/checklist">내 계약 진단하기 <span aria-hidden="true">→</span></a>
+        </div>
+        <div class="hero-visual" aria-hidden="true">
+          <div class="shield"><span>✓</span></div>
+          <div class="visual-card card-one"><span class="mini-icon">문</span><strong>등기부등본</strong><small>권리관계 확인</small></div>
+          <div class="visual-card card-two"><span class="mini-icon">%</span><strong>전세가율</strong><small>적정 비율 확인</small></div>
+          <div class="visual-card card-three"><span class="mini-icon">인</span><strong>임대인</strong><small>체납 여부 확인</small></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section result-section">
+      <div class="content-width">
+        <div class="section-heading split-heading">
+          <div><p class="eyebrow">MY SAFETY REPORT</p><h2>나의 계약 안전 진단</h2></div>
+          <p class="saved-at" id="savedAt">아직 저장된 진단이 없어요</p>
+        </div>
+
+        <div class="result-grid">
+          <article class="score-card panel">
+            <div class="score-ring safe" id="scoreRing" style="--score: 0">
+              <div><strong id="scoreValue">--</strong><span>점</span></div>
+            </div>
+            <div class="score-copy">
+              <span class="status-badge neutral" id="statusBadge">진단 전</span>
+              <h3 id="resultTitle">아직 진단 결과가 없어요</h3>
+              <p id="resultDescription">체크리스트를 완료하면 내 계약의 안전 점수와 주의할 항목을 확인할 수 있어요.</p>
+              <a href="/defense/checklist" class="text-link">체크리스트 시작하기 <span>→</span></a>
+            </div>
+          </article>
+
+          <article class="panel summary-card">
+            <div class="panel-title"><div><p class="eyebrow">진단 요약</p><h3>확인 현황</h3></div><span class="counter" id="answerCounter">0 / 12</span></div>
+            <div class="summary-bars">
+              <div class="summary-row"><div><span class="dot safe-dot"></span>안전</div><div class="bar"><i class="safe-bar" id="safeBar"></i></div><strong id="safeCount">0</strong></div>
+              <div class="summary-row"><div><span class="dot caution-dot"></span>주의</div><div class="bar"><i class="caution-bar" id="cautionBar"></i></div><strong id="cautionCount">0</strong></div>
+              <div class="summary-row"><div><span class="dot danger-dot"></span>위험</div><div class="bar"><i class="danger-bar" id="dangerBar"></i></div><strong id="dangerCount">0</strong></div>
+            </div>
+            <p class="helper-text">※ 본 결과는 참고용이며 계약의 법적 안전성을 보장하지 않습니다.</p>
+          </article>
+        </div>
+
+        <div class="section-heading compact-heading"><div><p class="eyebrow">ACTION ITEMS</p><h2>계약 전 꼭 확인할 항목</h2></div></div>
+        <div class="risk-list" id="riskList">
+          <div class="empty-state"><div class="empty-icon">✓</div><strong>체크리스트를 먼저 진행해 주세요</strong><p>답변에 따라 우선 확인해야 할 항목을 알려드릴게요.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section tools-section">
+      <div class="content-width">
+        <div class="section-heading"><p class="eyebrow">SAFETY TOOLS</p><h2>더 꼼꼼한 계약을 위한 도구</h2><p>순서대로 확인하면 놓치기 쉬운 위험까지 줄일 수 있어요.</p></div>
+        <div class="tool-grid">
+          <a class="tool-card" href="/defense/checklist"><span class="tool-number">01</span><div class="tool-icon checklist-icon">✓</div><h3>계약 안전 체크리스트</h3><p>계약 단계별 필수 확인 항목을<br>12가지 질문으로 점검해요.</p><span class="card-link">시작하기 →</span></a>
+          <a class="tool-card" href="/defense/calculator"><span class="tool-number">02</span><div class="tool-icon ratio-icon">%</div><h3>전세가율 계산기</h3><p>매매가와 보증금으로 깡통전세<br>위험도를 간편하게 계산해요.</p><span class="card-link">계산하기 →</span></a>
+          <a class="tool-card" href="/defense/guide"><span class="tool-number">03</span><div class="tool-icon guide-icon">文</div><h3>안전 계약가이드</h3><p>매물 확인부터 잔금일까지<br>단계별 계약 요령을 확인해요.</p><span class="card-link">확인하기 →</span></a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="zipai-footer"></footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="../../static/js/common.js"></script>
+  <script src="../../static/js/result.js?v=20260929-2"></script>
+</body>
+</html>

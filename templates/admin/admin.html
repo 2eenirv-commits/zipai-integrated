@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko" id="pageTop">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="집아이 고객센터 문의 관리 데모 페이지">
+  <title>고객센터 관리 | 집아이</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="../../static/css/header.css?v=20260916-10">
+  <link rel="stylesheet" href="../../static/css/footer.css?v=20260916-10">
+  <link rel="stylesheet" href="../../static/css/auth.css?v=20260916-10">
+  <link rel="stylesheet" href="../../static/css/admin.css?v=20260929-3">
+  <script src="../../static/js/auth.js?v=20260916-10" defer></script>
+  <script src="../../static/js/admin.js?v=20260929-3" defer></script>
+</head>
+<body class="has-zipai-footer">
+       <div class="zipai-header"></div>
+
+  
+
+  <main class="admin-main">
+    <div class="admin-container">
+      <section class="admin-view admin-denied admin-panel" data-admin-view="denied" hidden>
+        <i class="fa-solid fa-lock" aria-hidden="true"></i>
+        <h1>관리자 권한이 필요합니다</h1>
+        <p>관리자 페이지는 admin 아이디로 로그인한 경우에만 이용할 수 있습니다.</p>
+        <button class="admin-switch" id="adminSwitchAccount" type="button">관리자 계정으로 로그인</button>
+      </section>
+
+      <div class="admin-view" data-admin-view="dashboard" hidden>
+        <div class="admin-heading">
+          <div><p class="admin-eyebrow">ZIPAI ADMIN</p><h1>고객센터 관리</h1><p>접수된 문의를 확인하고 처리 상태를 관리하세요.</p></div>
+          <div class="admin-account"><i class="fa-solid fa-user-tie" aria-hidden="true"></i><strong id="adminUserId"></strong><button class="admin-logout" id="adminLogout" type="button">로그아웃</button></div>
+        </div>
+
+        <section class="admin-stats" aria-label="문의 현황">
+          <article class="admin-stat primary"><span>오늘 가입</span><strong><span id="adminNewMembers">0</span><em>명</em></strong></article>
+          <article class="admin-stat"><span>신규 문의</span><strong><span id="adminNewInquiries">0</span><em>건</em></strong></article>
+          <article class="admin-stat"><span>미답변 문의</span><strong><span id="adminUnanswered">0</span><em>건</em></strong></article>
+          <article class="admin-stat success"><span>검토 대기 매물</span><strong><span id="adminPendingProperties">0</span><em>건</em></strong></article>
+          <article class="admin-stat"><span>활성 회원</span><strong><span id="adminActiveMembers">0</span><em>명</em></strong></article>
+          <article class="admin-stat"><span>방문 대기</span><strong><span id="adminPendingVisits">0</span><em>건</em></strong></article>
+        </section>
+
+        <section class="admin-panel">
+          <div class="admin-toolbar">
+            <input id="adminSearch" type="search" placeholder="제목, 이메일, 문의 내용 검색" aria-label="문의 검색">
+            <select id="adminCategoryFilter" aria-label="문의 유형 필터"><option value="">모든 문의 유형</option><option>매물 이용</option><option>계약 안전</option><option>로그인·계정</option><option>서비스 오류</option><option>기타</option></select>
+            <select id="adminStatusFilter" aria-label="처리 상태 필터"><option value="">모든 처리 상태</option><option value="received">접수</option><option value="in_progress">확인 중</option><option value="answered">답변 완료</option></select>
+          </div>
+
+          <div class="admin-workspace">
+            <div class="admin-list-wrap">
+              <div class="admin-list-heading"><h2>문의 목록</h2><span id="adminResultCount">0건</span></div>
+              <div class="admin-empty" id="adminEmpty"><i class="fa-regular fa-folder-open" aria-hidden="true"></i>조건에 맞는 문의가 없습니다.</div>
+              <div class="admin-list" id="adminInquiryList" hidden></div>
+              <div class="admin-pagination"><button id="adminInquiryPrev" type="button">이전</button><span id="adminInquiryPage">1 / 1</span><button id="adminInquiryNext" type="button">다음</button></div>
+            </div>
+
+            <aside class="admin-detail">
+              <div class="admin-detail-empty" id="adminDetailEmpty"><div><i class="fa-regular fa-message" aria-hidden="true"></i>왼쪽 목록에서 문의를 선택하세요.</div></div>
+              <div class="admin-detail-content" id="adminDetailContent" hidden>
+                <div class="admin-detail-meta"><span id="adminDetailCategory"></span><time id="adminDetailDate"></time></div>
+                <h2 id="adminDetailTitle"></h2>
+                <p class="admin-detail-email" id="adminDetailEmail"></p>
+                <div class="admin-detail-message" id="adminDetailMessage"></div>
+                <label class="admin-reply-control">답변 내용<textarea id="adminReplyMessage" maxlength="1500" placeholder="고객에게 전달할 답변을 입력하세요."></textarea></label>
+                <label class="admin-status-control">처리 상태<select id="adminDetailStatus"><option value="received">접수</option><option value="in_progress">확인 중</option><option value="answered">답변 완료</option></select></label>
+                <div class="admin-detail-actions">
+                  <button class="admin-save" id="adminSaveStatus" type="button">상태 저장</button>
+                  <button class="admin-reply-save" id="adminSaveReply" type="button">답변 저장 및 완료</button>
+                  <button class="admin-delete" id="adminDeleteInquiry" type="button">삭제</button>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="admin-panel admin-collapsible">
+          <div class="admin-list-heading"><h2>방문 예약 관리</h2><div class="admin-heading-tools"><span id="adminVisitCount">0건</span><button class="admin-collapse-button" type="button" data-collapse-target="adminVisitBody" aria-expanded="true">접기</button></div></div>
+          <div id="adminVisitBody">
+            <p class="admin-visit-policy">실제 서비스에서는 매물담당자(매물등록자 혹은 담당공인중개사)가 방문가능여부 및 일정을 확인합니다.</p>
+            <div class="admin-section-filter"><select id="adminVisitStatus" aria-label="방문 상태 필터"><option value="">전체</option><option value="pending">승인 대기</option><option value="reschedule_requested">일정 변경 대기</option><option value="approved">예약 확정</option><option value="rejected">거절</option><option value="completed">방문 완료</option><option value="no_show">노쇼</option><option value="cancelled_by_user">사용자 취소</option><option value="cancelled_by_admin">관리자 취소</option></select></div>
+            <div class="admin-list" id="adminVisitList"></div>
+          </div>
+        </section>
+
+        <section class="admin-panel admin-collapsible">
+          <div class="admin-list-heading"><h2>매물 검토</h2><div class="admin-heading-tools"><span id="adminPropertyCount">0건</span><button class="admin-collapse-button" type="button" data-collapse-target="adminPropertyBody" aria-expanded="true">접기</button></div></div>
+          <div id="adminPropertyBody"><div class="admin-list" id="adminPropertyList"></div></div>
+        </section>
+
+        <section class="admin-panel admin-collapsible">
+          <div class="admin-list-heading"><h2>게시글 관리</h2><div class="admin-heading-tools"><span id="adminPostCount">0건</span><button class="admin-collapse-button" type="button" data-collapse-target="adminPostBody" aria-expanded="true">접기</button></div></div>
+          <div id="adminPostBody"><div class="admin-toolbar admin-toolbar-single"><input id="adminPostSearch" type="search" placeholder="게시글 제목 또는 작성자 검색"></div>
+          <div class="admin-list" id="adminPostList"></div></div>
+        </section>
+        <section class="admin-panel admin-collapsible">
+          <div class="admin-list-heading"><h2>금융정책 변경 검토</h2><div class="admin-heading-tools"><span id="adminFinanceCount">0건</span><button class="admin-collapse-button" type="button" data-collapse-target="adminFinanceBody" aria-expanded="true">접기</button></div></div>
+          <div id="adminFinanceBody"><div class="admin-finance-updates" id="adminFinanceUpdates">변경 후보를 확인하는 중입니다.</div></div>
+        </section>
+        <section class="admin-panel admin-collapsible">
+          <div class="admin-list-heading"><h2>관리자 감사 로그</h2><div class="admin-heading-tools"><span id="adminAuditCount">0건</span><button class="admin-collapse-button" type="button" data-collapse-target="adminAuditBody" aria-expanded="true">접기</button></div></div>
+          <div id="adminAuditBody"><div class="admin-list" id="adminAuditList"></div></div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <div class="admin-toast" id="adminToast" role="status" aria-live="polite"></div>
+
+  <footer class="zipai-footer"></footer>
+  <script src="../../static/js/common-layout.js?v=20260916-10" defer></script>
+</body>
+</html>

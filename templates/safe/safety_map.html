@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="ZipAI 안전도 지도 페이지" name="description"/>
+<title>ZipAI | 안전도 지도</title>
+<link href="../static/images/favicon.svg" rel="icon" type="image/svg+xml"/>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet"/>
+<link href="../../static/css/common.css" rel="stylesheet"/>
+<link href="../../static/css/header.css?v=20260916-10" rel="stylesheet"/>
+<link href="../../static/css/footer.css?v=20260916-10" rel="stylesheet"/>
+<link href="../../static/css/safe.css" rel="stylesheet"/>
+<script defer="" src="../../static/js/safe.js"></script><script src="../../static/js/auth.js?v=20260916-10" defer></script>
+</head>
+<body>
+<div class="zipai-page" id="top">
+<div class="zipai-header"></div>
+
+<main class="safe-page-main">
+<section class="safety-hero">
+<div class="zipai-container">
+<span class="safety-eyebrow"><i aria-hidden="true" class="fa-solid fa-map-location-dot"></i> 안전도 지도</span>
+<h1>검색 반경의 안전시설을<br/>한눈에 확인하세요</h1>
+<p>검색 위치 주변의 치안·시설 데이터를<br class="safe-mobile-break"/>색상과 아이콘으로 구분해 보여주는<br class="safe-mobile-break"/>안전도 지도입니다.</p>
+<div class="safe-hero-actions">
+<a class="safe-link-button primary" href="/safe/safety#safety-search"><i aria-hidden="true" class="fa-solid fa-magnifying-glass-location"></i> 다른 지역 검색</a>
+</div>
+</div>
+</section>
+<section class="zipai-container safe-section safety-map-workspace">
+<div aria-label="지도 요약" class="map-context-grid">
+<article class="map-context-card">
+<span class="safe-card-icon"><i aria-hidden="true" class="fa-solid fa-video"></i></span>
+<h3>CCTV</h3>
+<p>검색 반경 안의 공공 CCTV 위치와 용도를 확인하세요.</p>
+</article>
+<article class="map-context-card">
+<span class="safe-card-icon"><i aria-hidden="true" class="fa-solid fa-building-shield"></i></span>
+<h3>경찰·치안시설</h3>
+<p>경찰서와 지구대·파출소의 위치 및 거리를 확인하세요.</p>
+</article>
+<article class="map-context-card">
+<span class="safe-card-icon"><i aria-hidden="true" class="fa-solid fa-bell"></i></span>
+<h3>안전시설</h3>
+<p>안전비상벨과 보안등의 실제 공공데이터 위치를 확인하세요.</p>
+</article>
+</div>
+<section aria-label="상세지도 검색" class="zipai-card safety-map-control-panel">
+<form class="safety-search-form" novalidate="">
+<div class="safety-map-search-row">
+<div class="safety-field">
+<label for="safety-keyword">지역 또는 주소</label>
+<input id="safety-keyword" name="query" placeholder="예: 서울특별시 강남구 역삼동" type="search"/>
+</div>
+<div class="safety-field">
+<label for="safety-radius">분석 반경</label>
+<select id="safety-radius" name="radius">
+<option>500m</option>
+<option>1km</option>
+<option>2km</option>
+</select>
+</div>
+<button class="zipai-btn zipai-btn-primary" type="submit"><i aria-hidden="true" class="fa-solid fa-magnifying-glass-location"></i> 조회</button>
+<button class="zipai-btn zipai-btn-muted" type="reset"><i aria-hidden="true" class="fa-solid fa-rotate-left"></i> 초기화</button>
+</div>
+<div aria-label="표시할 안전 항목" class="safety-filter-grid safety-map-filter-grid">
+<label class="safety-check" data-mobile-label="지역안전"><input checked="" name="regional-safety" type="checkbox" value="regional"/> 지역안전</label>
+<label class="safety-check" data-mobile-label="5대범죄"><input checked="" name="crime-statistics" type="checkbox" value="crime-statistics"/> 5대범죄 현황</label>
+<label class="safety-check" data-mobile-label="여성안심"><input checked="" name="women-safe-house" type="checkbox" value="women-safe-house"/> 여성안전시설</label>
+<label class="safety-check" data-mobile-label="치안시설"><input checked="" name="safety-feature" type="checkbox" value="police"/> 치안시설</label>
+<label class="safety-check" data-mobile-label="비상벨·보안등"><input checked="" name="safety-feature" type="checkbox" value="safety"/> 안전 비상벨·보안등</label>
+<label class="safety-check" data-mobile-label="CCTV"><input checked="" name="safety-feature" type="checkbox" value="cctv"/> CCTV</label>
+</div>
+</form>
+</section>
+<section aria-label="안전도 지도" class="zipai-card safety-map-shell">
+<div class="safety-map-toolbar">
+<div class="safety-map-title">
+<h2>검색 지역 안전시설 분포</h2>
+<p>공공데이터에 좌표가 있는 안전시설을 표시합니다.</p>
+</div>
+<div aria-label="지도 보기 방식" class="safety-map-tabs">
+<button class="is-active" disabled="" title="지도 레이어 전환은 준비중입니다." type="button"><i aria-hidden="true" class="fa-solid fa-map"></i> 일반지도</button>
+<button disabled="" title="지도 레이어 전환은 준비중입니다." type="button"><i aria-hidden="true" class="fa-solid fa-layer-group"></i> 위성지도</button>
+<button disabled="" title="지도 레이어 전환은 준비중입니다." type="button"><i aria-hidden="true" class="fa-solid fa-route"></i> 밤길</button>
+</div>
+</div>
+<div class="safety-map">
+<div aria-hidden="true" class="map-water"></div>
+<div aria-hidden="true" class="map-road road-1"></div>
+<div aria-hidden="true" class="map-road road-2"></div>
+<div aria-hidden="true" class="map-road road-3"></div>
+<div class="zipai-card map-floating-card">
+<h3>안전시설 분포 안내</h3>
+<p>검색 좌표를 중심으로 실제 시설을 거리순 최대 80개까지 표시합니다.</p>
+<div class="map-legend">
+<span><i style="--tone: var(--zipai-primary);"></i> CCTV·보안등</span>
+<span><i style="--tone: var(--zipai-safe);"></i> 경찰·치안시설</span>
+<span><i style="--tone: var(--zipai-warning);"></i> 안전비상벨</span>
+</div>
+</div>
+<div aria-label="지도 확대 축소" class="map-zoom">
+<button aria-label="확대" disabled="" title="실제 지도 확대 기능은 준비중입니다." type="button"><i aria-hidden="true" class="fa-solid fa-plus"></i></button>
+<button aria-label="축소" disabled="" title="실제 지도 축소 기능은 준비중입니다." type="button"><i aria-hidden="true" class="fa-solid fa-minus"></i></button>
+<button aria-label="현재 위치" disabled="" title="현재 위치 기능은 준비중입니다." type="button"><i aria-hidden="true" class="fa-solid fa-location-crosshairs"></i></button>
+</div>
+<div class="map-bottom-bar">
+<div>
+<strong>분석 대기</strong>
+<span>지역을 검색해 주세요.</span>
+</div>
+<span>데이터 기준 -</span>
+</div>
+</div>
+</section>
+<div class="safety-map-results">
+<section aria-live="polite" class="safety-result">
+<h2>분석 결과</h2>
+<p class="safe-api-message">지역을 검색하고 조회를 눌러 주세요.</p>
+</section>
+<section aria-label="지역안전지수 결과" aria-live="polite" class="regional-safety-result">
+<h2>지역안전지수</h2>
+<p class="safe-api-message">지역안전 항목을 선택하고 조회해 주세요.</p>
+</section>
+<section aria-label="경찰 관할 5대범죄 통계 결과" aria-live="polite" class="regional-safety-result crime-statistics-result">
+<h2>5대범죄 현황</h2>
+<p class="safe-api-message">5대범죄 현황 항목을 선택하고 조회해 주세요.</p>
+</section>
+<section aria-label="주변 여성안전시설 결과" aria-live="polite" class="regional-safety-result women-safe-house-result">
+<h2>여성안전시설</h2>
+<p class="safe-api-message">여성안전시설 항목을 선택하고 조회해 주세요.</p>
+</section>
+</div>
+</section>
+</main>
+
+</div>
+<script src="../../static/js/common-layout.js?v=20260916-10" defer></script>
+
+<footer class="zipai-footer"></footer>
+</body>
+</html>

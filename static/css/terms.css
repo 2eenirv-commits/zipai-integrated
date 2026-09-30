@@ -1,0 +1,29 @@
+@import url("./common.css");
+
+.terms-main { min-height: 720px; padding: 60px 22px 90px; background: #f5f7fb; }
+.terms-container { width: min(980px, 100%); margin: 0 auto; }
+.terms-heading p { margin: 0 0 8px; color: var(--color-primary); font-size: 11px; font-weight: 800; letter-spacing: .14em; }
+.terms-heading h1 { margin: 0; color: var(--color-navy); font-family: var(--font-heading); font-size: clamp(30px, 4vw, 42px); }
+.terms-heading span { display: block; margin-top: 10px; color: #718096; font-size: 12px; }
+.terms-nav { display: flex; margin: 28px 0 20px; padding: 9px; border: 1px solid #dfe6ef; border-radius: 14px; gap: 8px; background: #fff; }
+.terms-nav a { min-height: 42px; padding: 0 18px; border-radius: 9px; display: inline-flex; align-items: center; color: #46566d; font-size: 13px; font-weight: 700; }
+.terms-nav a:hover { color: var(--color-primary); background: var(--color-sky); }
+.terms-notice { display: flex; margin-bottom: 20px; padding: 19px 21px; border: 1px solid #cfe0fb; border-radius: 14px; align-items: flex-start; gap: 13px; color: #42536a; background: #edf5ff; }
+.terms-notice i { margin-top: 3px; color: var(--color-primary); }
+.terms-notice p { margin: 0; font-size: 12px; line-height: 1.75; }
+.terms-section { padding: 34px 38px; border: 1px solid #e0e6ef; border-radius: 18px; background: #fff; box-shadow: 0 10px 28px rgba(19,40,76,.05); scroll-margin-top: 24px; }
+.terms-section + .terms-section { margin-top: 20px; }
+.terms-section:target { border-color: rgba(36,104,232,.45); box-shadow: 0 0 0 4px rgba(36,104,232,.07), 0 10px 28px rgba(19,40,76,.05); }
+.terms-section h2 { margin: 0 0 25px; padding-bottom: 16px; border-bottom: 1px solid #e8edf4; color: var(--color-navy); font-family: var(--font-heading); font-size: 24px; }
+.terms-section h3 { margin: 22px 0 7px; color: #273b59; font-size: 15px; }
+.terms-section p { margin: 0; color: #66768c; font-size: 13px; line-height: 1.85; }
+.terms-section ul { display: grid; margin: 0; padding: 16px 19px 16px 36px; border-radius: 12px; gap: 8px; color: #66768c; background: #f7f9fc; font-size: 12px; line-height: 1.7; }
+.terms-section li::marker { color: var(--color-primary); }
+.terms-section li strong { color: #34465f; }
+@media (max-width: 680px) {
+  .terms-main { padding: 42px 15px 65px; }
+  .terms-nav { display: grid; }
+  .terms-nav a { justify-content: center; }
+  .terms-section { padding: 27px 22px; }
+  .terms-section ul { padding-left: 30px; }
+}

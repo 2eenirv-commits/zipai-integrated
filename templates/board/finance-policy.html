@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ko" id="pageTop">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="전월세 계약 전 확인해야 할 보증금 대출, 보증보험, 주거급여, 월세지원 정책 안내">
+  <title>금융지원정책 | 집아이</title>
+  <link rel="stylesheet" href="../../static/css/board.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="../../static/css/footer.css?v=20260916-10">
+  <link rel="stylesheet" href="../../static/css/header.css?v=20260916-10">
+  <link rel="stylesheet" href="../../static/css/auth.css?v=20260916-10">
+  <script src="../../static/js/auth.js?v=20260916-10" defer></script>
+</head>
+<body class="has-zipai-footer" data-page="finance-policy">
+  <div class="zipai-header"></div>
+
+  
+
+  <main class="page-main">
+    <section class="page-hero finance-hero">
+      <div class="content-width">
+        <p class="breadcrumb"><a href="/">홈</a><span>›</span>금융지원정책</p>
+        <p class="eyebrow">HOUSING FINANCE GUIDE</p>
+        <h1>내 조건에 맞는<br>주거 금융지원을 찾으세요</h1>
+        <p>대출, 보증, 월세지원, 주거급여를 계약 단계별로 확인할 수 있게 정리했습니다.</p>
+      </div>
+    </section>
+
+    <section class="section finance-summary-section">
+      <div class="content-width">
+        <div class="section-heading">
+          <p class="eyebrow">START HERE</p>
+          <h2>계약 전에 먼저 확인할 4가지</h2>
+          <p>지원 가능 여부는 소득, 자산, 주택 조건, 보증금 규모에 따라 달라집니다.</p>
+        </div>
+        <div class="finance-summary-grid">
+          <article class="finance-summary-card panel">
+            <span>01</span>
+            <h3>전월세 보증금 대출</h3>
+            <p>청년, 신혼부부, 중소기업 취업청년 등 대상별 대출 상품을 먼저 비교하세요.</p>
+          </article>
+          <article class="finance-summary-card panel">
+            <span>02</span>
+            <h3>보증금 반환보증</h3>
+            <p>계약 전 보증 가입 가능 주택인지 확인하면 보증금 회수 위험을 줄일 수 있습니다.</p>
+          </article>
+          <article class="finance-summary-card panel">
+            <span>03</span>
+            <h3>월세·주거급여 지원</h3>
+            <p>월세 부담이 크다면 지자체 월세지원과 복지로 주거급여를 함께 확인하세요.</p>
+          </article>
+          <article class="finance-summary-card panel">
+            <span>04</span>
+            <h3>계약 비용 예산</h3>
+            <p>중개보수, 보증료, 이사비, 관리비 선납분까지 포함해 실제 필요 현금을 계산하세요.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section finance-policy-section">
+      <div class="content-width finance-policy-layout">
+        <aside class="finance-check-panel panel">
+          <p class="eyebrow">MY CHECK</p>
+          <h2>신청 전 체크리스트</h2>
+          <label><input type="checkbox"> 주민등록등본과 가족관계증명서를 준비했어요</label>
+          <label><input type="checkbox"> 소득·재직 증빙 또는 사업자 증빙을 확인했어요</label>
+          <label><input type="checkbox"> 계약하려는 집의 등기사항을 확인했어요</label>
+          <label><input type="checkbox"> 보증금, 월세, 관리비를 월 예산과 비교했어요</label>
+          <label><input type="checkbox"> 대출 가능 여부와 보증 가입 가능 여부를 은행 또는 기관에 문의했어요</label>
+          <p class="finance-note">정책별 세부 조건은 수시로 바뀔 수 있으므로 신청 전 공식 기관의 최신 공고를 확인하세요.</p>
+        </aside>
+
+        <div>
+          <div class="finance-policy-filters" aria-label="금융지원정책 검색 조건">
+            <label>지원 유형
+              <select id="financeCategory">
+                <option value="">전체</option>
+                <option value="purchase">주택 구입</option>
+                <option value="jeonse">전세자금</option>
+                <option value="monthly">월세지원</option>
+              </select>
+            </label>
+            <label>신청 대상
+              <select id="financeTarget">
+                <option value="">전체</option>
+                <option value="general">일반</option>
+                <option value="youth">청년</option>
+                <option value="newlywed">신혼부부</option>
+              </select>
+            </label>
+          </div>
+          <div class="finance-policy-list" id="financePolicyList" aria-live="polite">
+          <article class="finance-policy-card panel">
+            <div class="finance-policy-icon"><i class="fa-solid fa-vault" aria-hidden="true"></i></div>
+            <div>
+              <p class="eyebrow">DEPOSIT LOAN</p>
+              <h3>전월세 보증금 대출</h3>
+              <p>주택도시기금과 은행권의 전월세 대출은 대상, 보증금, 전용면적, 소득 조건에 따라 선택지가 달라집니다.</p>
+              <ul>
+                <li>청년, 신혼부부, 중소기업 취업청년 등 대상 유형 확인</li>
+                <li>대출 가능 주택과 보증금 기준 확인</li>
+                <li>계약 전 은행 사전상담으로 한도와 필요서류 확인</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="finance-policy-card panel">
+            <div class="finance-policy-icon"><i class="fa-solid fa-shield-heart" aria-hidden="true"></i></div>
+            <div>
+              <p class="eyebrow">GUARANTEE</p>
+              <h3>전세보증금 반환보증</h3>
+              <p>보증금 반환보증은 임대인이 보증금을 돌려주지 못하는 상황에 대비하는 장치입니다.</p>
+              <ul>
+                <li>계약 주택의 권리관계와 보증 가입 가능 여부 확인</li>
+                <li>보증기관별 가입 시기, 보증료, 심사 기준 비교</li>
+                <li>잔금 전후 필요한 서류와 신청 기한 확인</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="finance-policy-card panel">
+            <div class="finance-policy-icon"><i class="fa-solid fa-receipt" aria-hidden="true"></i></div>
+            <div>
+              <p class="eyebrow">RENT SUPPORT</p>
+              <h3>월세지원·주거급여</h3>
+              <p>소득과 가구 상황에 따라 청년 월세지원, 주거급여 같은 월 단위 지원을 받을 수 있습니다.</p>
+              <ul>
+                <li>복지로 또는 마이홈에서 가구 조건과 소득 인정액 확인</li>
+                <li>임대차계약서, 월세 납부 증빙, 통장 사본 준비</li>
+                <li>지자체별 모집 기간과 중복 지원 제한 여부 확인</li>
+              </ul>
+            </div>
+          </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section official-links-section">
+      <div class="content-width">
+        <div class="section-heading">
+          <p class="eyebrow">OFFICIAL LINKS</p>
+          <h2>공식 기관에서 최신 조건 확인하기</h2>
+          <p>집아이는 안내를 돕는 서비스이며, 신청 가능 여부는 각 기관의 심사 결과를 따릅니다.</p>
+        </div>
+        <div class="official-link-grid">
+          <a class="official-link-card panel" href="https://nhuf.molit.go.kr/" target="_blank" rel="noopener noreferrer">
+            <strong>주택도시기금</strong>
+            <span>전월세 자금대출 상품 확인</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+          </a>
+          <a class="official-link-card panel" href="https://www.khug.or.kr/" target="_blank" rel="noopener noreferrer">
+            <strong>HUG 주택도시보증공사</strong>
+            <span>전세보증금 반환보증 확인</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+          </a>
+          <a class="official-link-card panel" href="https://www.hf.go.kr/" target="_blank" rel="noopener noreferrer">
+            <strong>HF 한국주택금융공사</strong>
+            <span>전세자금보증 및 주택금융 확인</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+          </a>
+          <a class="official-link-card panel" href="https://www.myhome.go.kr/" target="_blank" rel="noopener noreferrer">
+            <strong>마이홈포털</strong>
+            <span>주거복지 정책과 자가진단 확인</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+          </a>
+          <a class="official-link-card panel" href="https://www.bokjiro.go.kr/" target="_blank" rel="noopener noreferrer">
+            <strong>복지로</strong>
+            <span>주거급여와 복지서비스 신청 확인</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="zipai-footer"></footer>
+  <script src="../../static/js/common-layout.js?v=20260916-10" defer></script>
+  <script src="../../static/js/finance-policy.js?v=20260928-1" defer></script>
+</body>
+</html>

@@ -1,0 +1,3 @@
+-- ZipAI database schema is managed by Flyway.
+-- Do not add CREATE/ALTER statements here.
+-- Add future changes under src/main/resources/db/migration/ as V2__, V3__, ...

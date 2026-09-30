@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ko" id="pageTop">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="생활패턴에 맞는 지역을 추천받고 방문 가능한 방을 예약하는 ZipAI Lifestyle 서비스">
+  <title>라이프스타일 추천·방 연결 | ZipAI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link rel="stylesheet" href="../../static/css/board.css">
+  <link rel="stylesheet" href="../../static/css/header.css?v=20260916-10">
+  <link rel="stylesheet" href="../../static/css/footer.css?v=20260916-10">
+  <link rel="stylesheet" href="../../static/css/auth.css?v=20260916-10">
+  <link rel="stylesheet" href="../../static/css/lifestyle-analysis.css">
+  <script src="../../static/js/auth.js?v=20260916-10" defer></script>
+</head>
+<body class="has-zipai-footer" data-page="room-connect">
+  <div class="zipai-header"></div>
+
+  <main class="room-connect-page">
+    <section class="room-hero" id="roomHero" data-stage="select">
+      <div class="room-hero-background" aria-hidden="true"></div>
+      <div class="content-width room-hero-grid">
+        <div class="room-hero-content">
+          <p class="eyebrow">ROOM CONNECT</p>
+          <h1>방문부터 계약 연결까지,<br>더 빠르고 안전하게</h1>
+          <p class="room-hero-copy">생활패턴 중요도를 분석해 잘 맞는 지역을 먼저 찾아보고, 원하는 방의 방문 일정과 다음 입주 연결까지 한 화면에서 준비하세요.</p>
+          <div class="room-hero-actions">
+            <button class="button button-primary" type="button" data-scroll="lifestyleRecommendSection"><i class="fa-solid fa-sliders"></i> 생활패턴 분석</button>
+            <button class="button button-primary" type="button" data-scroll="visitSection"><i class="fa-solid fa-calendar-check"></i> 방 보러 가기</button>
+            <button class="button button-secondary" type="button" data-scroll="offerSection"><i class="fa-solid fa-arrow-right-from-bracket"></i> 현재 방 내놓기</button>
+          </div>
+          <p class="legal-line"><i class="fa-solid fa-shield-halved"></i> 실제 계약은 반드시 집주인 또는 공인중개사를 통해 진행합니다.</p>
+        </div>
+        <nav class="journey-card" aria-label="서비스 진행 단계">
+          <button class="journey-row is-active" type="button" data-stage="select" data-target="availableRooms" aria-current="step"><span>01</span><span><strong>방 선택</strong><small>방문 가능한 매물을 확인해요</small></span><i class="fa-solid fa-house"></i></button>
+          <button class="journey-row" type="button" data-stage="reserve" data-target="visitForm"><span>02</span><span><strong>방문 예약</strong><small>원하는 날짜와 시간을 신청해요</small></span><i class="fa-solid fa-calendar"></i></button>
+          <button class="journey-row" type="button" data-stage="schedule" data-target="activitySection"><span>03</span><span><strong>일정 확인</strong><small>신청 및 등록 현황을 확인해요</small></span><i class="fa-solid fa-comments"></i></button>
+          <a class="journey-row" href="/defense/guide" data-stage="contract"><span>04</span><span><strong>안전한 계약</strong><small>계약 전 필수사항을 확인해요</small></span><i class="fa-solid fa-file-signature"></i></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="room-section lifestyle-recommend-section" id="lifestyleRecommendSection">
+      <div class="content-width">
+        <div class="section-heading split-heading">
+          <div>
+            <p class="eyebrow">LIFESTYLE MATCH</p>
+            <h2>내 생활패턴에 맞는 지역 찾기</h2>
+            <p>각 항목의 중요도를 0~5로 조절하면 공공데이터를 기반으로 가중 점수 추천(Weighted Score) · 생활 특성 유사도 추천(Weighted Cosine Similarity) · 가까운 생활 특성 추천(KNN Euclidean) 세 모델의 Top 3를 비교합니다.</p>
+          </div>
+          <span class="lifestyle-model-badge"><i class="fa-solid fa-brain"></i> Python AI/ML + 공공데이터</span>
+        </div>
+
+        <div class="lifestyle-layout">
+          <form class="panel lifestyle-preference-panel" id="lifestyleRecommendForm">
+            <div class="form-title">
+              <span><i class="fa-solid fa-sliders"></i></span>
+              <div><strong>생활요소 중요도</strong><small>0은 고려하지 않음, 5는 매우 중요를 뜻합니다.</small></div>
+            </div>
+
+            <div class="two-fields lifestyle-scope-fields">
+              <label>시·도
+                <select name="sido" id="lifestyleSido"><option value="">전체 지역</option></select>
+              </label>
+              <label>관심 지역
+                <select name="sigungu" id="lifestyleSigungu"><option value="">전체 시·군·구</option></select>
+              </label>
+            </div>
+
+            <div class="preference-grid">
+              <label class="preference-item"><span><strong>대중교통</strong><output data-weight-output="transportWeight">5</output></span><input type="range" name="transportWeight" min="0" max="5" value="5"></label>
+              <label class="preference-item"><span><strong>생활편의</strong><output data-weight-output="convenienceWeight">4</output></span><input type="range" name="convenienceWeight" min="0" max="5" value="4"></label>
+              <label class="preference-item"><span><strong>의료 접근성</strong><output data-weight-output="medicalWeight">3</output></span><input type="range" name="medicalWeight" min="0" max="5" value="3"></label>
+              <label class="preference-item"><span><strong>교육환경</strong><output data-weight-output="educationWeight">2</output></span><input type="range" name="educationWeight" min="0" max="5" value="2"></label>
+              <label class="preference-item"><span><strong>공원·녹지</strong><output data-weight-output="parkWeight">4</output></span><input type="range" name="parkWeight" min="0" max="5" value="4"></label>
+              <label class="preference-item"><span><strong>안전</strong><output data-weight-output="safetyWeight">5</output></span><input type="range" name="safetyWeight" min="0" max="5" value="5"></label>
+              <label class="preference-item"><span><strong>상권</strong><output data-weight-output="commercialWeight">3</output></span><input type="range" name="commercialWeight" min="0" max="5" value="3"></label>
+              <label class="preference-item"><span><strong>조용한 환경</strong><output data-weight-output="quietWeight">3</output></span><input type="range" name="quietWeight" min="0" max="5" value="3"></label>
+              <label class="preference-item"><span><strong>비용 부담</strong><output data-weight-output="costWeight">3</output></span><input type="range" name="costWeight" min="0" max="5" value="3"></label>
+            </div>
+
+            <button class="button button-primary button-full" type="submit"><i class="fa-solid fa-wand-magic-sparkles"></i> AI/ML 추천 분석하기</button>
+          </form>
+
+          <aside class="panel lifestyle-guide-panel">
+            <p class="eyebrow">HOW IT WORKS</p>
+            <h3>세 가지 모델을 비교해요<small>Compare Three Models</small></h3>
+            <div class="formula-card"><strong>가중 점수 추천 · 생활 특성 유사도 추천 · 가까운 생활 특성 추천</strong><small>Weighted Score · Weighted Cosine Similarity · KNN Euclidean</small><span>같은 9개 공공데이터 Feature를 서로 다른 기준으로 계산해 결과를 비교합니다.</span></div>
+            <ol class="lifestyle-guide-list">
+              <li><span>1</span><p><strong>중요도 선택</strong><small>나에게 중요한 생활요소에 높은 값을 주세요.</small></p></li>
+              <li><span>2</span><p><strong>AI/ML 비교<em>AI/ML Comparison</em></strong><small>가중 점수 추천(Weighted Score), 생활 특성 유사도 추천(Weighted Cosine Similarity), 가까운 생활 특성 추천(KNN Euclidean)을 각각 계산합니다.</small></p></li>
+              <li><span>3</span><p><strong>Top 3 + 이유</strong><small>모델별 추천 순위와 설명 가능한 추천 이유를 함께 보여드립니다.</small></p></li>
+            </ol>
+            <div class="lifestyle-data-trust" aria-label="Lifestyle 데이터 기준 안내">
+              <div class="lifestyle-data-trust-title">
+                <i class="fa-solid fa-circle-check"></i>
+                <strong>공공데이터 기반 상대평가</strong>
+              </div>
+              <p>경기도 31개 시·군의 공개 데이터를 같은 기준으로 정규화해 0~100 점수로 비교합니다.</p>
+              <details>
+                <summary>점수 산정 기준 자세히 보기</summary>
+                <dl class="lifestyle-method-list">
+                  <div><dt>대중교통</dt><dd>인구 대비 버스정류소 수</dd></div>
+                  <div><dt>생활편의·상권</dt><dd>인구 대비 영업 중 대규모점포 수</dd></div>
+                  <div><dt>의료</dt><dd>인구 대비 병원 수</dd></div>
+                  <div><dt>교육</dt><dd>학교·학원/교습소·도서관의 인구 대비 점수 평균</dd></div>
+                  <div><dt>공원·녹지</dt><dd>인구 1명당 공원 면적</dd></div>
+                  <div><dt>안전</dt><dd>인구 대비 CCTV 대수</dd></div>
+                  <div><dt>조용함</dt><dd>인구 대비 자동차 등록대수의 역점수이며 실제 소음 dB가 아닌 추정지표</dd></div>
+                  <div><dt>비용</dt><dd>일반주택·아파트·빌라 전월세 실거래가격의 상대적 부담도</dd></div>
+                </dl>
+              </details>
+            </div>
+          </aside>
+        </div>
+
+        <div class="lifestyle-result-heading" id="lifestyleResultHeading" hidden>
+          <div><p class="eyebrow">AI/ML 추천</p><h3>경기도 추천 TOP 3<small>Recommendation Results by Model</small></h3></div>
+          <span id="lifestyleResultScope"></span>
+        </div>
+        <div class="lifestyle-selected-region-summary" id="lifestyleSelectedRegionSummary" hidden></div>
+        <div class="lifestyle-result-grid" id="lifestyleRecommendationResults"></div>
+        <div class="lifestyle-data-note-wrap">
+          <p class="lifestyle-data-note" id="lifestyleDataNotice"></p>
+          <p class="lifestyle-data-disclaimer"><i class="fa-solid fa-circle-info"></i> 이 점수는 지역 간 비교를 위한 참고용 상대지표입니다. 실제 거주환경은 위치·주택·시간대와 개인 상황에 따라 달라질 수 있습니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="room-section" id="visitSection">
+      <div class="content-width">
+        <div class="section-heading split-heading">
+          <div><p class="eyebrow">VISIT A ROOM</p><h2>방 보러 가기</h2><p>방문 가능한 방을 고르고 원하는 일정을 신청하세요.</p><p class="visit-region-notice" id="visitRegionNotice">Lifestyle Match에서 지역을 선택하면 해당 지역의 방문 가능 매물을 보여드립니다.</p></div>
+          <a class="text-link" href="/">지도에서 더 많은 매물 보기 <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+        <div class="visit-layout">
+          <div class="available-rooms" id="availableRooms" aria-label="방문 가능한 방"></div>
+          <form class="connect-form panel" id="visitForm">
+            <div class="form-title"><span><i class="fa-solid fa-calendar-check"></i></span><div><strong>방문 일정 신청</strong><small>등록자 확인 후 일정이 확정됩니다.</small></div></div>
+            <input type="hidden" id="visitRoom" name="room">
+            <label>선택한 방<input id="selectedRoomName" value="방을 먼저 선택해 주세요" readonly></label>
+            <div class="two-fields">
+              <label>방문 희망일<input type="date" name="date" required></label>
+              <label>희망 시간<select name="time" id="visitTime" required><option value="">날짜와 방을 먼저 선택해 주세요</option></select></label>
+            </div>
+            <label>연락처<input type="tel" name="phone" placeholder="010-0000-0000" maxlength="13" required></label>
+            <label>미리 확인할 내용<textarea name="question" rows="3" placeholder="채광, 반려동물 가능 여부 등 궁금한 점을 남겨 주세요."></textarea></label>
+            <button class="button button-primary button-full" type="submit">방문 승인 요청하기</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="room-section room-section-alt" id="offerSection">
+      <div class="content-width">
+        <div class="section-heading"><p class="eyebrow">OFFER MY ROOM</p><h2>현재 방 내놓기</h2><p>퇴실 일정과 방문 가능 시간을 알려 다음 입주자 연결을 준비하세요.</p></div>
+        <div class="offer-layout">
+          <section class="connect-form panel offer-form">
+            <div class="form-title"><span><i class="fa-solid fa-house-circle-check"></i></span><div><strong>공통 매물 등록으로 연결</strong><small>중복 입력 없이 매물 찾기의 동일한 등록·검색·지도 체계를 사용합니다.</small></div></div>
+            <p>퇴실 예정 방은 월세 매물 등록 화면에서 주소와 사진을 입력해 주세요. 설명란에는 청년 주거생활 연결 매물임이 자동으로 표시됩니다.</p>
+            <a class="button button-primary button-full" href="/properties/register?purpose=youth-relay&dealType=monthly">퇴실 예정 방 등록하기</a>
+          </section>
+          <form class="connect-form panel offer-form" id="offerForm" hidden aria-hidden="true">
+            <div class="form-title"><span><i class="fa-solid fa-house-circle-check"></i></span><div><strong>퇴실 예정 방 등록</strong><small>일반 매물 등록이 아닌 다음 입주자 연결 요청입니다.</small></div></div>
+            <div class="two-fields">
+              <label>방 제목<input name="title" placeholder="예: 야탑역 도보 7분 원룸" required></label>
+              <label>지역<input name="district" placeholder="예: 성남시 분당구" required></label>
+            </div>
+            <div class="three-fields">
+              <label>보증금(만원)<input type="number" name="deposit" min="0" step="100" required></label>
+              <label>월세(만원)<input type="number" name="monthly" min="0" step="1" required></label>
+              <label>관리비(만원)<input type="number" name="maintenance" min="0" step="1" required></label>
+            </div>
+            <div class="two-fields">
+              <label>계약 종료일<input type="date" name="contractEnd" required></label>
+              <label>입주 가능일<input type="date" name="moveIn" required></label>
+            </div>
+            <label>방문 가능 시간<input name="availableTime" placeholder="예: 평일 19시 이후, 주말 협의" required></label>
+            <div class="offer-photo-field">
+              <div class="offer-photo-heading">
+                <div><strong>방 사진</strong><small>첫 번째 사진이 대표사진으로 사용됩니다.</small></div>
+                <span id="offerPhotoCount">0 / 5장</span>
+              </div>
+              <label class="offer-photo-picker" for="offerImages">
+                <i class="fa-solid fa-camera"></i>
+                <strong>사진 선택</strong>
+                <small>JPG · PNG · WEBP / 한 장당 5MB 이하 / 최대 5장</small>
+              </label>
+              <input class="offer-photo-input" id="offerImages" type="file" name="images" accept="image/jpeg,image/png,image/webp" multiple>
+              <div class="offer-photo-preview" id="offerPhotoPreview" aria-live="polite"></div>
+            </div>
+            <fieldset class="agreement-box">
+              <legend>집주인·중개사 협의 상태</legend>
+              <label><input type="radio" name="agreement" value="집주인 확인 완료" required> 집주인 확인 완료</label>
+              <label><input type="radio" name="agreement" value="중개사 협의 중"> 중개사 협의 중</label>
+              <label><input type="radio" name="agreement" value="협의 전"> 아직 협의 전</label>
+            </fieldset>
+            <label>방 소개<textarea name="description" rows="3" placeholder="옵션, 채광, 주변 환경과 다음 입주자에게 알려줄 내용을 작성해 주세요."></textarea></label>
+            <label class="confirm-check"><input type="checkbox" required> 직접 계약이나 전대가 아닌 연결 요청이며, 실제 계약은 집주인 또는 공인중개사를 통해 진행하는 것에 동의합니다.</label>
+            <button class="button button-primary button-full" type="submit">방 내놓기 등록</button>
+          </form>
+          <aside class="offer-guide">
+            <article><i class="fa-solid fa-clock"></i><div><strong>정확한 입주 시점</strong><p>계약 종료일과 입주 가능일을 구분해 방문자에게 알려 주세요.</p></div></article>
+            <article><i class="fa-solid fa-user-shield"></i><div><strong>집주인 확인 우선</strong><p>등록 전 집주인 또는 담당 중개사와 다음 임차인 연결 가능 여부를 확인하세요.</p></div></article>
+            <article><i class="fa-solid fa-handshake"></i><div><strong>계약은 전문가와</strong><p>보증금 전달과 계약서 작성은 당사자 확인 후 공인중개사를 통해 진행하세요.</p></div></article>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="room-section" id="activitySection">
+      <div class="content-width">
+        <div class="section-heading"><p class="eyebrow">MY ACTIVITY</p><h2>방문 신청·승인 현황</h2><p>신청받은 사람이 승인해야 방문 일정이 최종 확정됩니다. 이 브라우저에서 시연할 수 있습니다.</p></div>
+        <div class="activity-grid">
+          <article class="activity-panel panel"><div class="activity-title"><h3>방문 요청 관리</h3><span id="visitCount">0건</span></div><div class="activity-list" id="visitList"></div></article>
+          <article class="activity-panel panel"><div class="activity-title"><h3>내놓은 방</h3><span id="offerCount">0건</span></div><div class="activity-list" id="offerList"></div></article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="zipai-footer"></footer>
+  <div class="room-toast" id="roomToast" role="status" aria-live="polite"></div>
+  <script src="../../static/js/common-layout.js?v=20260916-10"></script>
+  <script src="../../static/js/lifestyle-analysis.js"></script>
+</body>
+</html>

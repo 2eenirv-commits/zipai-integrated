@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko" id="pageTop">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ZipAI 회원 전용 게시글 상세">
+  <title>게시글 상세 | ZipAI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link rel="stylesheet" href="../../static/css/board.css">
+  <link rel="stylesheet" href="../../static/css/header.css?v=20260916-10">
+  <link rel="stylesheet" href="../../static/css/footer.css?v=20260916-10">
+  <link rel="stylesheet" href="../../static/css/auth.css?v=20260916-10">
+  <link rel="stylesheet" href="../../static/css/community.css">
+  <script src="../../static/js/auth.js?v=20260916-10" defer></script>
+</head>
+<body class="has-zipai-footer community-page">
+  <div class="zipai-header"></div>
+  <main>
+    <section class="member-gate" id="memberGate" hidden>
+      <div class="member-gate-card">
+        <span class="gate-symbol"><i class="fa-solid fa-user-lock"></i></span>
+        <p class="eyebrow">MEMBERS ONLY</p>
+        <h2>게시글은 회원만 확인할 수 있습니다</h2>
+        <p>로그인하면 회원들이 작성한 주거 후기와 상세 정보를 확인할 수 있습니다.</p>
+        <div class="gate-tabs"><a class="gate-tab gate-tab-primary" href="/member/signup"><i class="fa-solid fa-user-plus"></i><span><strong>회원가입</strong><small>ZipAI 회원으로 시작하기</small></span></a><a class="gate-tab" href="/member/login"><i class="fa-solid fa-right-to-bracket"></i><span><strong>로그인하기</strong><small>기존 계정으로 이용하기</small></span></a></div>
+      </div>
+    </section>
+    <section class="post-detail-section" id="postDetailSection" hidden>
+      <div class="content-width post-detail-width">
+        <a class="post-back-link" href="/board/community"><i class="fa-solid fa-arrow-left"></i> 게시판 목록</a>
+        <article class="post-detail-card" id="postDetailCard">
+          <header class="post-detail-header">
+            <span class="post-category" id="detailCategory"></span>
+            <h1 id="detailTitle"></h1>
+            <div class="post-detail-meta"><span id="detailAuthor"></span><span id="detailDate"></span><span id="detailArea"></span><span class="post-rating" id="detailRating"></span></div>
+          </header>
+          <img class="post-detail-image" id="detailImage" alt="게시글 첨부 이미지" hidden>
+          <div class="post-detail-content" id="detailContent"></div>
+          <footer class="post-detail-footer">
+            <div class="post-detail-actions">
+              <button class="detail-like-button" id="detailLike" type="button"><i class="fa-regular fa-heart"></i><span>공감</span><strong id="detailLikes">0</strong></button>
+              <button class="detail-report-button" id="detailReport" type="button"><i class="fa-regular fa-flag"></i><span>신고</span></button>
+            </div>
+            <span><i class="fa-regular fa-eye"></i> 조회 <strong id="detailViews">0</strong></span>
+          </footer>
+        </article>
+        <section class="community-comments" id="commentSection">
+          <div class="comment-heading"><h2>댓글 <strong id="commentCount">0</strong></h2></div>
+          <form class="comment-form" id="commentForm">
+            <label for="commentContent">댓글 작성</label>
+            <div><textarea id="commentContent" name="content" maxlength="500" rows="3" placeholder="서로를 존중하는 댓글을 작성해 주세요." required></textarea><button class="button button-primary" type="submit">등록</button></div>
+          </form>
+          <div class="comment-list" id="commentList"></div>
+        </section>
+        <div class="post-detail-notice"><i class="fa-solid fa-circle-info"></i><p>회원 후기는 개인 경험을 바탕으로 작성된 참고 정보입니다. 실제 매물 상태와 계약조건은 방문 및 공식 서류를 통해 확인하세요.</p></div>
+      </div>
+    </section>
+  </main>
+  <footer class="zipai-footer"></footer>
+  <div class="community-toast" id="communityToast" role="status" aria-live="polite"></div>
+  <script src="../../static/js/common-layout.js?v=20260916-10" defer></script>
+  <script src="../../static/js/community-data.js" defer></script>
+  <script src="../../static/js/community-detail.js" defer></script>
+</body>
+</html>

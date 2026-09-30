@@ -1,0 +1,59 @@
+# Secrets and local environment
+.env
+.env.*
+!.env.example
+certs/
+*.pem
+*.key
+*.p12
+*.jks
+
+# Gradle and Java build output
+.gradle/
+build/
+out/
+*.class
+
+# Python virtual environments and caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# IDE and operating-system files
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# Local study notes and text documents
+/study_file/
+*.md
+*.txt
+!requirements.txt
+!rpa/requirements-*.txt
+
+# Runtime logs and temporary files
+logs/
+rpa/logs/
+*.log
+*.tmp
+
+# Crawled, generated, archived, and rejected data
+rpa/data/**
+!rpa/data/templates/
+!rpa/data/templates/**
+data/
+
+# User-uploaded property images
+static/img/properties/
+uploads/
+
+# Local database exports and backups
+/zipai_backup.sql
+/*_backup.sql
+
+# Local delivery archives
+*.zip

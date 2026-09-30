@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko" id="pageTop">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ZipAI 회원 전용 주거 후기와 정보 커뮤니티">
+  <title>게시판·주거 후기 | ZipAI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link rel="stylesheet" href="../../static/css/board.css">
+  <link rel="stylesheet" href="../../static/css/header.css?v=20260916-10">
+  <link rel="stylesheet" href="../../static/css/footer.css?v=20260916-10">
+  <link rel="stylesheet" href="../../static/css/auth.css?v=20260916-10">
+  <link rel="stylesheet" href="../../static/css/community.css">
+  <script src="../../static/js/auth.js?v=20260916-10" defer></script>
+</head>
+<body class="has-zipai-footer community-page">
+  <div class="zipai-header"></div>
+
+  <main>
+    <section class="community-hero">
+      <div class="content-width">
+        <p class="eyebrow">ZIPAI COMMUNITY</p>
+        <h1>직접 살아본 이야기로<br>더 좋은 집을 선택하세요</h1>
+        <p>주거 후기, 방 구하기 경험과 생활 정보를 회원들과 나누는 공간입니다.</p>
+      </div>
+    </section>
+
+    <section class="member-gate" id="memberGate" hidden>
+      <div class="member-gate-card">
+        <span class="gate-symbol"><i class="fa-solid fa-user-lock"></i></span>
+        <p class="eyebrow">MEMBERS ONLY</p>
+        <h2>회원만 이용할 수 있는 게시판입니다</h2>
+        <p>로그인하면 실제 거주 후기와 회원들의 주거 정보를 확인하고 직접 글을 작성할 수 있습니다.</p>
+        <div class="gate-benefits">
+          <span><i class="fa-solid fa-check"></i> 주거 후기 열람</span>
+          <span><i class="fa-solid fa-check"></i> 게시글 작성</span>
+          <span><i class="fa-solid fa-check"></i> 질문과 정보 공유</span>
+        </div>
+        <div class="gate-tabs" role="group" aria-label="회원 계정 메뉴">
+          <a class="gate-tab gate-tab-primary" href="/member/signup"><i class="fa-solid fa-user-plus"></i><span><strong>회원가입</strong><small>ZipAI 회원으로 시작하기</small></span></a>
+          <a class="gate-tab" href="/member/login"><i class="fa-solid fa-right-to-bracket"></i><span><strong>로그인하기</strong><small>기존 계정으로 이용하기</small></span></a>
+        </div>
+        <a class="gate-home-link" href="/"><i class="fa-solid fa-arrow-left"></i> 매물 찾기로 돌아가기</a>
+      </div>
+    </section>
+
+    <section class="community-workspace" id="communityWorkspace" hidden>
+      <div class="content-width">
+        <div class="community-heading">
+          <div><p class="eyebrow">MEMBER BOARD</p><h2>게시판·주거 후기</h2><p><strong id="communityUser"></strong>님의 경험과 정보를 나눠보세요.</p></div>
+          <button class="write-button" id="openWriteForm" type="button"><i class="fa-solid fa-pen"></i> 글쓰기</button>
+        </div>
+
+        <form class="community-write-panel" id="communityWriteForm" hidden>
+          <div class="write-panel-heading"><div><strong>새 글 작성</strong><small>개인정보와 정확한 주소는 작성하지 마세요.</small></div><button id="closeWriteForm" type="button" aria-label="글쓰기 닫기">×</button></div>
+          <div class="write-form-grid">
+            <label>분류<select name="category" required><option value="review">주거 후기</option><option value="tip">생활 정보</option><option value="question">질문</option><option value="free">자유게시판</option></select></label>
+            <label>제목<input name="title" maxlength="60" placeholder="제목을 입력해 주세요" required></label>
+          </div>
+          <label>내용<textarea name="content" rows="7" maxlength="2000" placeholder="회원들에게 도움이 되는 내용을 작성해 주세요." required></textarea></label>
+          <div class="review-fields" id="reviewFields">
+            <label>거주 지역<input name="area" maxlength="30" placeholder="예: 성남시 분당구"></label>
+            <label>만족도<select name="rating"><option value="5">★★★★★ 5점</option><option value="4">★★★★☆ 4점</option><option value="3">★★★☆☆ 3점</option><option value="2">★★☆☆☆ 2점</option><option value="1">★☆☆☆☆ 1점</option></select></label>
+          </div>
+          <label class="community-image-field">이미지 첨부 <span>JPG·PNG, 최대 10MB</span><input name="image" type="file" accept="image/jpeg,image/png"></label>
+          <div class="write-actions"><button class="button button-secondary" id="cancelWrite" type="button">취소</button><button class="button button-primary" type="submit">게시글 등록</button></div>
+        </form>
+
+        <div class="board-toolbar">
+          <div class="board-tabs" role="tablist" aria-label="게시글 분류">
+            <button class="active" type="button" data-category="all">전체</button>
+            <button type="button" data-category="review">주거 후기</button>
+            <button type="button" data-category="tip">생활 정보</button>
+            <button type="button" data-category="question">질문</button>
+            <button type="button" data-category="free">자유게시판</button>
+          </div>
+          <label class="board-search"><i class="fa-solid fa-magnifying-glass"></i><input id="boardSearch" type="search" placeholder="제목과 내용 검색"></label>
+        </div>
+
+        <div class="board-summary"><p>전체 <strong id="postCount">0</strong>개의 글</p><select id="postSort" aria-label="게시글 정렬"><option value="latest">최신순</option><option value="likes">공감순</option></select></div>
+        <div class="community-post-list" id="communityPostList"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="zipai-footer"></footer>
+  <div class="community-toast" id="communityToast" role="status" aria-live="polite"></div>
+  <script src="../../static/js/common-layout.js?v=20260916-10" defer></script>
+  <script src="../../static/js/community-data.js" defer></script>
+  <script src="../../static/js/community.js" defer></script>
+</body>
+</html>

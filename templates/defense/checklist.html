@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko" id="pageTop">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="전세계약 단계별 안전 체크리스트">
+  <title>계약 안전 체크리스트 | 집아이</title>
+  <link rel="stylesheet" href="../../static/css/board.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="../../static/css/footer.css?v=20260916-10">
+  <link rel="stylesheet" href="../../static/css/header.css?v=20260916-10">
+  <link rel="stylesheet" href="../../static/css/auth.css?v=20260916-10">
+  <script src="../../static/js/common-layout.js?v=20260916-10" defer></script>
+
+  <script src="../../static/js/auth.js?v=20260916-10" defer></script>
+</head>
+<body class="has-zipai-footer" data-page="checklist">
+       <div class="zipai-header"></div>
+
+  
+  
+
+  <main class="page-main">
+    <section class="page-hero"><div class="content-width"><p class="breadcrumb"><a href="/defense/result">사기방지</a><span>›</span>체크리스트</p><p class="eyebrow">SAFETY CHECKLIST</p><h1>계약 전 5분,<br>위험 신호를 확인하세요</h1><p>작성 중 답변은 브라우저에 임시 저장되며, 로그인 회원의 완료 결과는 계정에 저장됩니다.</p></div></section>
+
+    <section class="section checklist-section"><div class="content-width narrow-width">
+      <div class="progress-panel panel sticky-progress">
+        <div class="progress-info"><div><span id="progressLabel">진행률 0%</span><small id="progressCount">0 / 12 완료</small></div><button class="reset-button" type="button" id="resetChecklist">처음부터</button></div>
+        <div class="progress-track"><i id="progressBar"></i></div>
+        <div class="step-tabs" role="tablist" aria-label="계약 단계"><button type="button" class="active" data-step="0">1. 매물 확인</button><button type="button" data-step="1">2. 계약 당일</button><button type="button" data-step="2">3. 잔금·입주</button></div>
+      </div>
+
+      <form id="checklistForm" novalidate>
+        <section class="question-step active" data-step-panel="0">
+          <div class="step-heading"><span>STEP 01</span><div><h2>매물 확인 단계</h2><p>계약서를 쓰기 전 집과 임대인의 기본 정보를 확인해요.</p></div></div>
+          <div class="questions" id="questionsStep0"></div>
+        </section>
+        <section class="question-step" data-step-panel="1">
+          <div class="step-heading"><span>STEP 02</span><div><h2>계약 당일 단계</h2><p>권리관계가 바뀌지 않았는지 다시 확인하고 특약을 남겨요.</p></div></div>
+          <div class="questions" id="questionsStep1"></div>
+        </section>
+        <section class="question-step" data-step-panel="2">
+          <div class="step-heading"><span>STEP 03</span><div><h2>잔금·입주 단계</h2><p>보증금의 우선변제권을 갖추고 마지막 변동 사항을 확인해요.</p></div></div>
+          <div class="questions" id="questionsStep2"></div>
+        </section>
+
+        <div class="form-navigation"><button type="button" class="button button-secondary" id="prevStep" disabled>이전 단계</button><button type="button" class="button button-primary" id="nextStep">다음 단계</button><button type="submit" class="button button-primary hidden" id="submitChecklist">진단 결과 보기</button></div>
+      </form>
+    </div></section>
+  </main>
+  <footer class="zipai-footer"></footer>
+<div class="modal-backdrop" id="incompleteModal" aria-hidden="true"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><button type="button" class="modal-close" aria-label="닫기">×</button><div class="modal-icon">!</div><h2 id="modalTitle">확인하지 않은 항목이 있어요</h2><p><strong id="missingCount">0개</strong> 항목에 답하면 더 정확한 결과를 볼 수 있어요.<br>그래도 현재 답변으로 결과를 확인할까요?</p><div class="modal-actions"><button type="button" class="button button-secondary modal-close-button">계속 작성하기</button><button type="button" class="button button-primary" id="continueResult">결과 보기</button></div></div></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="../../static/js/common.js"></script><script src="../../static/js/checklist.js"></script>
+</body>
+</html>

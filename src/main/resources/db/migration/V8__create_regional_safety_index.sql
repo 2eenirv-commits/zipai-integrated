@@ -1,0 +1,28 @@
+CREATE TABLE IF NOT EXISTS regional_safety_index (
+  id BIGINT NOT NULL AUTO_INCREMENT,
+  `year` SMALLINT NOT NULL,
+  region_level VARCHAR(20) NOT NULL,
+  sido_name VARCHAR(40) NOT NULL,
+  sigungu_name VARCHAR(80) NOT NULL DEFAULT '',
+  traffic_grade TINYINT NOT NULL,
+  fire_grade TINYINT NOT NULL,
+  crime_grade TINYINT NOT NULL,
+  life_safety_grade TINYINT NOT NULL,
+  suicide_grade TINYINT NOT NULL,
+  infectious_disease_grade TINYINT NOT NULL,
+  source_name VARCHAR(160) NOT NULL,
+  source_updated_at DATE NOT NULL,
+  created_at DATETIME(6) NOT NULL,
+  updated_at DATETIME(6) NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE KEY uk_regional_safety_region (`year`, region_level, sido_name, sigungu_name),
+  KEY idx_regional_safety_lookup (`year`, sido_name, sigungu_name),
+  CONSTRAINT chk_regional_safety_level CHECK (region_level IN ('sido', 'sigungu')),
+  CONSTRAINT chk_regional_safety_traffic CHECK (traffic_grade BETWEEN 1 AND 5),
+  CONSTRAINT chk_regional_safety_fire CHECK (fire_grade BETWEEN 1 AND 5),
+  CONSTRAINT chk_regional_safety_crime CHECK (crime_grade BETWEEN 1 AND 5),
+  CONSTRAINT chk_regional_safety_life CHECK (life_safety_grade BETWEEN 1 AND 5),
+  CONSTRAINT chk_regional_safety_suicide CHECK (suicide_grade BETWEEN 1 AND 5),
+  CONSTRAINT chk_regional_safety_infectious CHECK (infectious_disease_grade BETWEEN 1 AND 5)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+

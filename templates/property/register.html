@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko" id="pageTop">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZipAI | 매물 등록</title>
+  <link rel="stylesheet" href="/static/css/common.css"><link rel="stylesheet" href="/static/css/header.css?v=20260916-10"><link rel="stylesheet" href="/static/css/footer.css?v=20260916-10"><link rel="stylesheet" href="/static/css/auth.css"><link rel="stylesheet" href="/static/css/property-management.css?v=20260922-1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <script src="/static/js/auth.js" defer></script>
+</head>
+<body class="has-zipai-footer">
+<div class="zipai-header"></div>
+<main class="property-manage-shell">
+  <section id="registerPageHero" class="manage-hero" hidden><p class="eyebrow">PROPERTY REGISTRATION</p><h1>매물 등록</h1><p>아파트와 일반주택의 매매·전세·월세 매물을 한 곳에서 등록합니다. 주소를 선택하면 지역과 지도 좌표가 자동으로 처리됩니다.</p></section>
+  <section id="registerLoginGate" class="manage-card login-required-card" hidden><strong>로그인 후 사용 가능합니다.</strong></section>
+  <section id="registerFormCard" class="manage-card" hidden>
+    <div class="registration-mode-heading"><h2 id="formModeTitle">새 매물 등록</h2><p id="formModeHelp">매물 정보를 입력하고 사진을 등록해 주세요.</p></div>
+    <form id="salePropertyForm" enctype="multipart/form-data" novalidate>
+      <div class="form-grid">
+        <label class="wide">매물 제목<input name="title" required maxlength="80" placeholder="예: 수원 광교 신축 아파트 매매"></label>
+        <label>건물 유형<select name="buildingType" required><option value="">선택</option><option>아파트</option><option>주택</option><option>오피스텔</option><option>빌라</option><option>상가주택</option><option>기타</option></select></label>
+        <label>거래 유형<select id="dealType" name="dealType" required><option value="SALE">매매</option><option value="JEONSE">전세</option><option value="MONTHLY">월세</option></select></label>
+        <label id="salePriceField">매매가(만원)<input name="salePrice" type="number" min="1" step="100"></label>
+        <label id="depositField" hidden>보증금(만원)<input name="deposit" type="number" min="0" step="100"></label>
+        <label id="monthlyField" hidden>월세(만원)<input name="monthly" type="number" min="0" step="1"></label>
+
+        <label class="wide address-search-field">주소 검색
+          <div class="address-search-box">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            <input id="addressSearch" type="text" autocomplete="off" maxlength="120" placeholder="예: 수원시 영통구 태장로" aria-controls="addressSuggestions" aria-expanded="false">
+            <span id="addressSearchSpinner" class="address-search-spinner" aria-hidden="true"></span>
+          </div>
+          <small class="address-help">도로명 일부를 입력한 뒤 검색 결과에서 정확한 주소를 선택해 주세요.</small>
+          <div id="addressSuggestions" class="address-suggestions" role="listbox" aria-label="주소 검색 결과" hidden></div>
+          <small id="geocodeStatus" class="geocode-status" aria-live="polite"></small>
+        </label>
+
+        <label class="wide">상세주소(동·호수)<input id="detailAddress" name="detailAddress" maxlength="100" placeholder="예: 101동 1203호" disabled></label>
+
+        <!-- 사용자에게는 숨기고 주소 선택 결과에서 내부적으로 채운다. -->
+        <input id="selectedAddress" name="address" type="hidden">
+        <input id="selectedSido" name="sido" type="hidden">
+        <input id="selectedSigungu" name="sigungu" type="hidden">
+        <input id="selectedNeighborhood" name="neighborhood" type="hidden">
+        <input id="selectedLat" name="lat" type="hidden">
+        <input id="selectedLng" name="lng" type="hidden">
+
+        <label>전용면적(㎡)<input name="area" type="number" min="1" step="0.1" required></label>
+        <label>층<input name="floor" required maxlength="30" placeholder="12층"></label>
+        <label>관리비(만원)<input name="maintenance" type="number" min="0" max="1000" step="1" value="0" placeholder="예: 32"></label>
+        <label>연락처<input id="contactInput" name="contact" type="tel" inputmode="numeric" autocomplete="tel" required maxlength="13" placeholder="010-0000-0000"></label>
+      </div>
+      <div class="check-row"><label><input type="checkbox" name="parking" value="true"> 주차 가능</label><label><input type="checkbox" name="elevator" value="true"> 엘리베이터</label><label><input type="checkbox" name="pet" value="true"> 반려동물 협의</label></div>
+      <label class="block-label">매물 설명<textarea name="description" rows="5" maxlength="3000" placeholder="매물 특징과 확인할 내용을 입력해 주세요."></textarea></label>
+      <section class="photo-box"><div><strong>매물 사진</strong><small id="photoHelp">JPG · PNG · WEBP / 장당 5MB 이하 / 최대 10장 · 사진을 누르면 대표 사진으로 지정됩니다.</small></div><label class="file-field"><input id="propertyImages" name="images" type="file" accept="image/jpeg,image/png,image/webp" multiple required></label><input id="representativeIndex" name="representativeIndex" type="hidden" value="0"><div id="existingImagePreview" class="image-preview existing-image-preview" hidden></div><div id="imagePreview" class="image-preview"></div></section>
+      <div class="form-actions"><button id="cancelEditButton" class="secondary-btn button-reset" type="button" hidden>수정 취소</button><a class="secondary-btn" href="/">돌아가기</a><button id="salePropertySubmitButton" class="primary-btn" type="submit"><span class="submit-label">매물 등록하기</span><span class="submit-spinner" aria-hidden="true"></span></button></div>
+      <p id="registerMessage" class="form-message" aria-live="polite"></p>
+    </form>
+  </section>
+  <section id="myListingsCard" class="manage-card my-listings-card" hidden>
+    <div class="my-listings-heading"><div><p class="eyebrow">MY LISTINGS</p><h2>내가 등록한 매물</h2><p>상세정보·수정·삭제와 거래 상태를 관리합니다.</p></div><div class="my-listings-tools"><select id="myListingStatusFilter" aria-label="등록 매물 상태"><option value="all">전체</option><option value="active">거래중</option><option value="closed">거래완료</option></select><button id="refreshMyListings" class="inline-btn" type="button">새로고침</button></div></div>
+    <div id="myListingGrid" class="favorite-grid" aria-live="polite"></div>
+    <div id="myListingEmpty" class="empty-state" hidden><i class="fa-solid fa-house-circle-check"></i><strong>아직 직접 등록한 매물이 없습니다.</strong><p>위 등록 양식을 작성하면 이곳에서 바로 확인할 수 있습니다.</p></div>
+    <p id="myListingMessage" class="form-message" aria-live="polite"></p>
+  </section>
+  <dialog id="listingDetailDialog" class="listing-detail-dialog"><div class="dialog-heading"><h2 id="listingDetailTitle">매물 상세정보</h2><button id="closeListingDetail" type="button" aria-label="상세정보 닫기">×</button></div><div id="listingDetailContent"></div></dialog>
+</main>
+<footer class="zipai-footer"></footer>
+<script src="/static/js/property-register.js?v=20260922-2" defer></script><script src="/static/js/common-layout.js?v=20260916-10" defer></script>
+</body></html>

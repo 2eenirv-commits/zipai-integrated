@@ -1,0 +1,12 @@
+.git
+.gradle
+build
+.env
+.venv
+**/__pycache__
+**/*.pyc
+*.zip
+rpa/data
+rpa/logs
+data
+certs

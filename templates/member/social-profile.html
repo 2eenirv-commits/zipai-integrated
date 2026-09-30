@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko" id="pageTop">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="집아이 소셜 로그인 추가정보 입력">
+  <title>추가정보 입력 | 집아이</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link rel="stylesheet" href="/static/css/header.css?v=20260928-1">
+  <link rel="stylesheet" href="/static/css/footer.css?v=20260928-1">
+  <link rel="stylesheet" href="/static/css/auth.css?v=20260928-1">
+  <script src="/static/js/auth.js?v=20260928-1" defer></script>
+  <script src="/static/js/social-profile.js?v=20260928-1" defer></script>
+</head>
+<body class="has-zipai-footer login-page">
+  <div class="zipai-header"></div>
+  <main class="login-page-main">
+    <section class="login-page-card signup-page-card" aria-labelledby="socialProfileTitle">
+      <div class="login-view">
+      <span class="login-page-symbol"><i class="fa-solid fa-address-card" aria-hidden="true"></i></span>
+      <h1 id="socialProfileTitle">추가정보 입력</h1>
+      <p class="login-page-description">ZipAI 서비스를 이용할 아이디와 연락처를 입력해 주세요.</p>
+      <form class="login-page-form" id="socialProfileForm">
+        <label class="login-page-field">아이디<input name="userId" type="text" autocomplete="username" minlength="4" maxlength="20" required></label>
+        <label class="login-page-field">이메일<input name="email" type="email" autocomplete="email" placeholder="zipai@example.com" required></label>
+        <label class="login-page-field">휴대폰 번호<input name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="010-0000-0000" required></label>
+        <label class="login-page-consent"><input name="consent" type="checkbox" required><span>회원 식별과 서비스 이용을 위한 정보 저장에 동의합니다.</span></label>
+        <button class="login-page-submit" type="submit"><i class="fa-solid fa-check" aria-hidden="true"></i> 입력 완료</button>
+      </form>
+      <p class="login-page-demo"><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span>입력한 정보는 ZipAI 회원 기능과 계정 관리에 사용됩니다.</span></p>
+      </div>
+    </section>
+  </main>
+  <footer class="zipai-footer"></footer>
+  <script src="/static/js/common-layout.js?v=20260928-1" defer></script>
+</body>
+</html>

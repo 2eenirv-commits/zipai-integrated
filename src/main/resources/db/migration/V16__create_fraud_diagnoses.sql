@@ -1,0 +1,22 @@
+CREATE TABLE IF NOT EXISTS fraud_diagnoses (
+  id BIGINT NOT NULL AUTO_INCREMENT,
+  user_id BIGINT NOT NULL,
+  client_ref VARCHAR(64) NOT NULL,
+  checklist_score INT NOT NULL,
+  final_score INT NOT NULL,
+  safe_count INT NOT NULL,
+  caution_count INT NOT NULL,
+  danger_count INT NOT NULL,
+  unanswered_count INT NOT NULL,
+  jeonse_ratio DECIMAL(7,2) NULL,
+  risk_level VARCHAR(20) NOT NULL,
+  created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  updated_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+  PRIMARY KEY (id),
+  CONSTRAINT uk_fraud_diagnosis_client UNIQUE (user_id, client_ref),
+  CONSTRAINT fk_fraud_diagnosis_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  KEY idx_fraud_diagnosis_latest (user_id, updated_at),
+  CONSTRAINT chk_fraud_checklist_score CHECK (checklist_score BETWEEN 0 AND 100),
+  CONSTRAINT chk_fraud_final_score CHECK (final_score BETWEEN 0 AND 100),
+  CONSTRAINT chk_fraud_risk_level CHECK (risk_level IN ('safe', 'caution', 'danger'))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

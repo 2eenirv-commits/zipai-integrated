@@ -1,0 +1,720 @@
+.room-connect-page{background:#f7f9fc;color:var(--navy)}
+.room-hero{position:relative;isolation:isolate;overflow:hidden;padding:70px 0;background:#edf4ff}
+.room-hero::after{position:absolute;z-index:-1;inset:0;content:"";background:linear-gradient(90deg,rgba(237,244,255,.9) 0%,rgba(237,248,246,.61) 37%,rgba(244,249,251,.22) 66%,rgba(244,249,251,.12) 100%)}
+.room-hero-background{position:absolute;z-index:-2;top:0;bottom:0;left:0;width:100%;background-image:url("../images/room-connect/room-select.png");background-position:center;background-size:cover;opacity:.82;transform:translateX(-14%) scale(1.02);transition:opacity .22s ease,transform .65s ease}
+.room-hero-background.is-switching{opacity:.1;transform:translateX(-14%) scale(1.045)}
+.room-hero-grid{position:relative;display:grid;grid-template-columns:minmax(0,1.12fr) minmax(380px,.88fr);align-items:center;gap:64px}
+.room-hero-content{position:relative;z-index:1;padding:28px;border-radius:22px;background:rgba(243,249,253,.58);box-shadow:0 12px 42px rgba(31,55,88,.06);backdrop-filter:blur(3px)}
+.room-hero h1{margin:8px 0 18px;font-size:48px;line-height:1.22;letter-spacing:-.045em}
+.room-hero-copy{max-width:660px;margin:0;color:var(--muted);font-size:16px;line-height:1.75}
+.room-hero-actions{display:flex;margin-top:30px;gap:10px}.room-hero-actions .button{min-height:50px;padding:0 22px}
+.legal-line{margin:18px 0 0!important;color:#607088!important;font-size:12px!important;font-weight:700}.legal-line i{margin-right:6px;color:var(--green)}
+.journey-card{padding:22px;border:1px solid rgba(36,104,232,.13);border-radius:22px;background:rgba(255,255,255,.76);box-shadow:0 20px 55px rgba(31,55,88,.11);backdrop-filter:blur(8px)}
+.journey-row{display:grid;width:100%;min-height:76px;padding:13px 14px;grid-template-columns:36px 1fr 40px;align-items:center;gap:12px;border:0;border-radius:13px;color:var(--navy);background:transparent;text-align:left;cursor:pointer;font:inherit;text-decoration:none;transition:color .2s,background .2s,transform .2s,box-shadow .2s}
+.journey-row+.journey-row{border-top:1px solid #e8edf4}.journey-row.is-active{color:#fff;background:var(--blue)}
+.journey-row:hover,.journey-row:focus-visible{color:#fff;background:var(--blue);box-shadow:0 9px 22px rgba(36,104,232,.2);outline:0;transform:translateX(-4px)}
+.journey-row>span:first-child{font-size:11px;font-weight:900}.journey-row strong,.journey-row small{display:block}.journey-row strong{font-size:14px}.journey-row small{margin-top:4px;color:inherit;font-size:10px;opacity:.72}
+.journey-row>i{display:grid;width:38px;height:38px;border-radius:11px;place-items:center;color:var(--blue);background:var(--blue-light)}.journey-row.is-active>i{color:var(--blue);background:#fff}
+.journey-row:hover>i,.journey-row:focus-visible>i{color:var(--blue);background:#fff}
+.room-section{padding:76px 0}.room-section-alt{background:#eef4fa}
+.section-heading{margin-bottom:28px}.section-heading h2{margin:5px 0 8px;font-size:32px;letter-spacing:-.035em}.section-heading>p:last-child{margin:0;color:var(--muted);font-size:14px}
+.split-heading{display:flex;align-items:end;justify-content:space-between;gap:20px}.text-link{color:var(--blue);font-size:13px;font-weight:800}
+.visit-layout{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(350px,.75fr);align-items:start;gap:24px}.available-rooms{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.visit-room-card{overflow:hidden;border:2px solid transparent;border-radius:17px;background:#fff;box-shadow:0 8px 25px rgba(31,55,88,.08);cursor:pointer;transition:.2s}.visit-room-card:hover,.visit-room-card.is-selected{border-color:var(--blue);transform:translateY(-3px)}
+.visit-room-photo{display:grid;height:145px;place-items:center;color:#fff;background:linear-gradient(135deg,#87a9cc,#294d75);font-size:38px}.visit-room-card:nth-child(2) .visit-room-photo{background:linear-gradient(135deg,#88baa9,#286d58)}.visit-room-card:nth-child(3) .visit-room-photo{background:linear-gradient(135deg,#e5b383,#9a5c2d)}.visit-room-card:nth-child(4) .visit-room-photo{background:linear-gradient(135deg,#a6a0d6,#514a96)}
+.visit-room-copy{padding:17px}.visit-room-copy>span{color:var(--green);font-size:10px;font-weight:900}.visit-room-copy h3{margin:6px 0 7px;font-size:16px}.visit-room-copy p{margin:0 0 13px;color:var(--muted);font-size:11px}.room-meta{display:flex;align-items:center;justify-content:space-between;gap:8px}.room-meta strong{font-size:14px}.room-meta small{color:var(--blue);font-weight:800}
+.connect-form{padding:27px;box-shadow:none}.form-title{display:flex;margin-bottom:24px;align-items:center;gap:12px}.form-title>span{display:grid;width:46px;height:46px;flex:0 0 46px;border-radius:13px;place-items:center;color:#fff;background:var(--blue)}.form-title strong,.form-title small{display:block}.form-title strong{font-size:17px}.form-title small{margin-top:5px;color:var(--muted);font-size:10px}
+.connect-form>label,.two-fields label,.three-fields label{display:grid;margin-bottom:15px;gap:7px;color:#40516a;font-size:12px;font-weight:800}.two-fields,.three-fields{display:grid;gap:12px}.two-fields{grid-template-columns:repeat(2,minmax(0,1fr))}.three-fields{grid-template-columns:repeat(3,minmax(0,1fr))}
+.connect-form input,.connect-form select,.connect-form textarea{width:100%;min-width:0;padding:0 13px;border:1px solid #d5deea;border-radius:9px;outline:0;color:var(--navy);background:#fff;font:inherit}.connect-form input,.connect-form select{height:45px}.connect-form textarea{padding-top:12px;resize:vertical}.connect-form input:focus,.connect-form select:focus,.connect-form textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(36,104,232,.1)}.connect-form input[readonly]{color:#5f7087;background:#f1f5f9}.connect-form select option:disabled{color:#b9c1cc;background:#f4f6f8}
+.offer-layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;align-items:start;gap:24px}.offer-form{padding:32px}.agreement-box{display:flex;margin:0 0 17px;padding:15px;border:1px solid #d5deea;border-radius:10px;gap:18px}.agreement-box legend{padding:0 5px;color:#40516a;font-size:12px;font-weight:800}.agreement-box label{display:flex;align-items:center;gap:6px;color:#5d6c80;font-size:11px;font-weight:700}.agreement-box input,.confirm-check input{width:16px;height:16px;flex:0 0 16px}.confirm-check{display:flex!important;grid-template-columns:16px 1fr!important;align-items:start;line-height:1.55}
+.offer-guide{display:grid;gap:13px}.offer-guide article{display:grid;padding:20px;grid-template-columns:38px 1fr;gap:13px;border:1px solid #dce4ee;border-radius:14px;background:#fff}.offer-guide i{display:grid;width:38px;height:38px;border-radius:11px;place-items:center;color:var(--blue);background:var(--blue-light)}.offer-guide strong{font-size:13px}.offer-guide p{margin:6px 0 0;color:var(--muted);font-size:11px;line-height:1.65}
+.activity-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.activity-panel{padding:25px;box-shadow:none}.activity-title{display:flex;margin-bottom:16px;align-items:center;justify-content:space-between}.activity-title h3{margin:0;font-size:19px}.activity-title span{padding:5px 9px;border-radius:20px;color:var(--blue);background:var(--blue-light);font-size:10px;font-weight:900}.activity-list{display:grid;gap:10px}.activity-empty{padding:34px 15px;border:1px dashed #c9d4e2;border-radius:12px;color:var(--muted);text-align:center;font-size:12px}.activity-item{display:grid;padding:14px;grid-template-columns:1fr auto;gap:8px;border-radius:11px;background:#f4f7fb}.activity-item strong,.activity-item small{display:block}.activity-item strong{font-size:13px}.activity-item small{margin-top:5px;color:var(--muted);font-size:10px}.activity-status{align-self:start;padding:5px 8px;border-radius:12px;color:#7b5700;background:#fff2c4;font-size:9px;font-weight:900}.activity-status.is-approved{color:#087653;background:#daf5e9}.activity-status.is-rejected{color:#8b97a6;background:#e8edf2}.approval-actions{display:flex;margin-top:10px;gap:6px}.approval-actions button{padding:6px 10px;border:1px solid #cbd6e3;border-radius:7px;color:#53647b;background:#fff;cursor:pointer;font-size:10px;font-weight:800}.approval-actions button[data-action="approve"]{border-color:#9ec9ff;color:var(--blue);background:#edf5ff}.approval-actions button:hover{filter:brightness(.97)}
+.room-toast{position:fixed;z-index:500;right:24px;bottom:24px;visibility:hidden;padding:14px 18px;border-radius:10px;color:#fff;background:var(--navy);box-shadow:0 10px 30px rgba(0,0,0,.2);opacity:0;transform:translateY(10px);transition:.2s}.room-toast.is-visible{visibility:visible;opacity:1;transform:none}
+@media(max-width:980px){.room-hero-background{width:118%;opacity:.6;transform:translateX(-18%) scale(1.02)}.room-hero-background.is-switching{transform:translateX(-18%) scale(1.045)}.room-hero::after{background:linear-gradient(180deg,rgba(237,244,255,.88) 0%,rgba(237,248,246,.62) 58%,rgba(244,249,251,.48) 100%)}.room-hero-grid,.visit-layout,.offer-layout{grid-template-columns:1fr}.journey-card{display:grid;max-width:none;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.journey-row+.journey-row{border-top:0}.journey-row:hover,.journey-row:focus-visible{transform:translateY(-3px)}.offer-guide{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:720px){.room-hero{padding:48px 0}.room-hero-background{width:130%;background-position:center;opacity:.46;transform:translateX(-24%) scale(1.02)}.room-hero-background.is-switching{transform:translateX(-24%) scale(1.045)}.room-hero::after{background:linear-gradient(180deg,rgba(237,244,255,.88),rgba(237,248,246,.68))}.room-hero-content{padding:20px;background:rgba(243,249,253,.7)}.room-hero h1{font-size:35px}.room-hero-actions,.split-heading{align-items:stretch;flex-direction:column}.journey-card{display:flex;overflow-x:auto;padding:12px;scroll-snap-type:x mandatory}.journey-row{min-width:245px;scroll-snap-align:start}.room-section{padding:55px 0}.available-rooms,.activity-grid,.offer-guide,.two-fields,.three-fields{grid-template-columns:1fr}.agreement-box{align-items:flex-start;flex-direction:column}.connect-form,.offer-form{padding:22px}}
+
+/* Lifestyle recommendation */
+.lifestyle-recommend-section{background:linear-gradient(180deg,#f7fbff 0%,#eef5fb 100%)}
+.lifestyle-model-badge{display:inline-flex;align-items:center;gap:7px;padding:8px 12px;border:1px solid #cfe0f6;border-radius:999px;color:var(--blue);background:#fff;font-size:11px;font-weight:900;white-space:nowrap}
+.lifestyle-layout{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(300px,.7fr);align-items:start;gap:24px}
+.lifestyle-preference-panel,.lifestyle-guide-panel{padding:28px;box-shadow:none}
+.lifestyle-scope-fields{margin-bottom:6px}
+.preference-grid{display:grid;margin:8px 0 24px;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.preference-item{display:grid;padding:14px;border:1px solid #dbe5f0;border-radius:13px;background:#f9fbfd;gap:10px}
+.preference-item>span{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.preference-item strong{color:#40516a;font-size:12px}
+.preference-item output{display:grid;width:26px;height:26px;border-radius:8px;place-items:center;color:#fff;background:var(--blue);font-size:11px;font-weight:900}
+.preference-item input[type="range"]{width:100%;height:auto;padding:0;border:0;background:transparent;box-shadow:none;accent-color:var(--blue)}
+.lifestyle-guide-panel h3{margin:5px 0 16px;font-size:22px;letter-spacing:-.03em}
+.formula-card{display:grid;padding:17px;border-radius:13px;color:#fff;background:linear-gradient(135deg,#2468e8,#4b88ef);gap:5px}
+.formula-card strong{font-size:14px}.formula-card span{font-size:10px;line-height:1.55;opacity:.85}
+.lifestyle-guide-list{display:grid;margin:18px 0;padding:0;gap:12px;list-style:none}
+.lifestyle-guide-list li{display:grid;grid-template-columns:30px 1fr;align-items:start;gap:10px}
+.lifestyle-guide-list li>span{display:grid;width:30px;height:30px;border-radius:9px;place-items:center;color:var(--blue);background:var(--blue-light);font-size:10px;font-weight:900}
+.lifestyle-guide-list p{margin:0}.lifestyle-guide-list strong,.lifestyle-guide-list small{display:block}.lifestyle-guide-list strong{font-size:12px}.lifestyle-guide-list small{margin-top:4px;color:var(--muted);font-size:10px;line-height:1.5}
+.lifestyle-data-warning{margin:18px 0 0;padding:12px 13px;border-radius:10px;color:#6d5c2a;background:#fff7d9;font-size:10px;line-height:1.6}.lifestyle-data-warning i{margin-right:5px}
+.lifestyle-result-heading{display:flex;margin:34px 0 16px;align-items:end;justify-content:space-between;gap:16px}.lifestyle-result-heading h3{margin:4px 0 0;font-size:25px}.lifestyle-result-heading>span{color:var(--muted);font-size:11px;font-weight:800}
+.lifestyle-result-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.lifestyle-result-card{position:relative;overflow:hidden;padding:22px;border:1px solid #d9e3ef;border-radius:17px;background:#fff;box-shadow:0 10px 28px rgba(31,55,88,.07)}
+.lifestyle-result-card.is-first{border-color:#9fc0ff;box-shadow:0 14px 34px rgba(36,104,232,.13)}
+.lifestyle-rank{position:absolute;top:0;right:0;display:grid;width:52px;height:52px;place-items:center;color:#fff;background:var(--blue);font-size:11px;font-weight:900;clip-path:polygon(28% 0,100% 0,100% 100%,0 100%,0 28%)}
+.lifestyle-result-card h4{margin:8px 58px 3px 0;font-size:18px;letter-spacing:-.025em}.lifestyle-result-card>.area-sub{margin:0;color:var(--muted);font-size:10px}
+.lifestyle-total{display:flex;margin:18px 0 14px;align-items:end;gap:7px}.lifestyle-total strong{font-size:34px;line-height:1;color:var(--blue)}.lifestyle-total span{padding-bottom:3px;color:var(--muted);font-size:10px;font-weight:800}.lifestyle-match-level{margin-left:auto!important;padding:5px 8px!important;border-radius:999px;color:#087653!important;background:#daf5e9;font-size:9px!important;font-weight:900}
+.lifestyle-score-list{display:grid;gap:7px}.lifestyle-score-row{display:grid;grid-template-columns:68px 1fr 28px;align-items:center;gap:8px;color:#5e6d80;font-size:9px;font-weight:800}.lifestyle-score-bar{overflow:hidden;height:6px;border-radius:999px;background:#e9eef5}.lifestyle-score-bar i{display:block;height:100%;border-radius:inherit;background:var(--blue)}
+.lifestyle-reasons{margin:15px 0 0;padding:13px 14px 13px 28px;border-radius:11px;background:#f5f8fc;color:#4f6076;font-size:10px;line-height:1.6}.lifestyle-reasons li+li{margin-top:4px}
+.lifestyle-result-actions{display:flex;margin-top:14px;gap:7px}.lifestyle-result-actions .button{min-height:38px;padding:0 13px;font-size:10px}
+.lifestyle-source{display:block;margin-top:12px;color:#8794a5;font-size:8px;line-height:1.5}
+.lifestyle-data-note{margin:14px 0 0;color:#7c899a;font-size:10px;line-height:1.6}
+.lifestyle-result-empty{grid-column:1/-1;padding:28px;border:1px dashed #c9d4e2;border-radius:14px;color:var(--muted);background:#fff;text-align:center;font-size:12px}
+@media(max-width:980px){.lifestyle-layout{grid-template-columns:1fr}.lifestyle-result-grid{grid-template-columns:1fr 1fr}.preference-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:720px){.preference-grid,.lifestyle-result-grid{grid-template-columns:1fr}.lifestyle-result-heading{align-items:flex-start;flex-direction:column}.lifestyle-model-badge{white-space:normal}.lifestyle-preference-panel,.lifestyle-guide-panel{padding:22px}}
+
+
+/* Lifestyle public-data trust / methodology */
+.lifestyle-data-trust{margin:18px 0 0;padding:15px 16px;border:1px solid #cfe0f6;border-radius:12px;background:#f7fbff;color:#53647b}
+.lifestyle-data-trust-title{display:flex;align-items:center;gap:7px;margin-bottom:7px;color:#2468e8;font-size:11px}
+.lifestyle-data-trust-title strong{font-size:11px}
+.lifestyle-data-trust>p{margin:0;font-size:10px;line-height:1.65}
+.lifestyle-data-trust details{margin-top:10px;border-top:1px solid #dce8f5;padding-top:9px}
+.lifestyle-data-trust summary{cursor:pointer;color:#40516a;font-size:10px;font-weight:800}
+.lifestyle-method-list{display:grid;margin:11px 0 0;gap:7px}
+.lifestyle-method-list>div{display:grid;grid-template-columns:92px 1fr;gap:8px;align-items:start}
+.lifestyle-method-list dt{color:#40516a;font-size:9px;font-weight:900}
+.lifestyle-method-list dd{margin:0;color:#6d7c8e;font-size:9px;line-height:1.5}
+.lifestyle-data-note-wrap{margin-top:14px}
+.lifestyle-data-note-wrap .lifestyle-data-note{margin:0;color:#5f7087;font-size:10px;line-height:1.65;font-weight:700}
+.lifestyle-data-disclaimer{margin:7px 0 0;color:#7c899a;font-size:9px;line-height:1.6}
+.lifestyle-data-disclaimer i{margin-right:5px}
+.lifestyle-source{padding-top:10px;border-top:1px solid #edf1f6}
+.lifestyle-source::before{content:"데이터 ";font-weight:800;color:#6f7f91}
+@media(max-width:720px){.lifestyle-method-list>div{grid-template-columns:1fr;gap:2px}}
+
+
+/* Lifestyle Match → 지역별 방 보러 가기 */
+.visit-region-notice{margin-top:8px!important;color:#45617d!important;font-size:11px!important}
+.visit-region-notice strong{color:var(--blue);font-weight:900}
+.visit-room-photo{position:relative;display:grid;height:165px;place-items:center;overflow:hidden;background:linear-gradient(135deg,#dce6f1,#7892ad);font-size:38px}
+.visit-room-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transition:transform .25s ease}
+.visit-room-card:hover .visit-room-photo img{transform:scale(1.035)}
+.visit-room-photo-fallback{position:relative;z-index:0;color:#fff}
+.visit-room-photo-badge{position:absolute;left:11px;top:11px;z-index:2;padding:5px 8px;border-radius:999px;background:rgba(10,31,58,.78);color:#fff!important;font-size:9px!important;font-weight:900!important;backdrop-filter:blur(5px)}
+.visit-room-photo-credit{position:absolute;right:9px;bottom:8px;z-index:2;padding:3px 6px;border-radius:6px;background:rgba(10,31,58,.68);color:#fff!important;font-size:7px!important;font-weight:700}
+.visit-room-copy>span:first-child{display:inline-flex;align-items:center;gap:4px}
+
+.visit-room-empty{grid-column:1/-1;padding:34px 20px;border:1px dashed #cbd8e8;border-radius:14px;background:#fff;color:#6b7b8f;text-align:center;font-size:12px;font-weight:700}
+
+/* Lifestyle 10차: 방 사진 업로드 */
+.offer-photo-field{display:grid;gap:10px;padding:14px;border:1px solid #d9e4f2;border-radius:12px;background:#f8fbff}
+.offer-photo-heading{display:flex;justify-content:space-between;gap:16px;align-items:center}
+.offer-photo-heading>div{display:grid;gap:3px}.offer-photo-heading strong{font-size:11px;color:#10213a}
+.offer-photo-heading small{font-size:9px;color:#76879a}.offer-photo-heading>span{font-size:9px;font-weight:900;color:#2c6bed}
+.offer-photo-input{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important}
+.offer-photo-picker{display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-height:105px;border:1px dashed #9bb8e8!important;border-radius:10px;background:#fff;cursor:pointer;text-align:center}
+.offer-photo-picker i{font-size:22px;color:#2c6bed}.offer-photo-picker strong{font-size:11px;color:#19314f}.offer-photo-picker small{font-size:8px;color:#8190a1}
+.offer-photo-preview{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.offer-photo-preview-item{position:relative;margin:0;aspect-ratio:1/1;overflow:hidden;border-radius:9px;background:#e7eef7}
+.offer-photo-preview-item img{width:100%;height:100%;object-fit:cover;display:block}
+.offer-photo-preview-item figcaption{position:absolute;left:5px;bottom:5px;padding:3px 6px;border-radius:999px;background:rgba(16,33,58,.78);color:#fff;font-size:7px;font-weight:900}
+.activity-item-with-thumb{grid-template-columns:52px 1fr auto!important;align-items:center}
+.activity-offer-thumb{width:52px;height:52px;border-radius:9px;object-fit:cover;background:#e6edf6}
+@media(max-width:720px){.offer-photo-preview{grid-template-columns:repeat(3,minmax(0,1fr))}.activity-item-with-thumb{grid-template-columns:44px 1fr!important}.activity-item-with-thumb>.activity-status{grid-column:2}.activity-offer-thumb{width:44px;height:44px}}
+
+
+/* Lifestyle AI/ML 5차: Spring Boot -> Python 추천 결과 UI */
+.lifestyle-algorithm-block{margin-top:18px;padding:20px;border:1px solid #d8e4f1;border-radius:18px;background:rgba(255,255,255,.72)}
+.lifestyle-algorithm-block+.lifestyle-algorithm-block{margin-top:20px}
+.lifestyle-algorithm-heading{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:14px}
+.lifestyle-algorithm-heading>div{min-width:220px}.lifestyle-algorithm-heading h4{margin:5px 0 0;color:#20354f;font-size:18px;letter-spacing:-.025em}
+.lifestyle-algorithm-heading>p{max-width:620px;margin:0;color:#718096;font-size:10px;line-height:1.6;text-align:right}
+.lifestyle-algorithm-tag{display:inline-flex;padding:5px 8px;border-radius:999px;color:#2468e8;background:#eaf2ff;font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:.06em}
+.lifestyle-ml-card .lifestyle-total{align-items:center;flex-wrap:wrap}.lifestyle-ml-card .lifestyle-total>strong{font-size:31px}
+.lifestyle-distance{margin-left:auto!important;padding:5px 8px!important;border-radius:999px;color:#53647b!important;background:#eef3f8;font-size:8px!important;font-weight:900!important}
+.lifestyle-ml-reason{margin-top:14px;padding:13px 14px;border-radius:11px;background:#f5f8fc;color:#4f6076}
+.lifestyle-ml-reason strong{display:flex;align-items:center;gap:6px;color:#34516f;font-size:10px}.lifestyle-ml-reason strong i{color:#e6a700}
+.lifestyle-ml-reason p{margin:7px 0 0;font-size:9px;line-height:1.65}
+@media(max-width:720px){.lifestyle-algorithm-heading{align-items:flex-start;flex-direction:column;gap:8px}.lifestyle-algorithm-heading>p{text-align:left}.lifestyle-algorithm-block{padding:14px}}
+
+
+/* Lifestyle AI/ML 5차 레이아웃 보완:
+   추천 방식 3개는 가로 배치, 각 방식의 TOP 1~3 카드는 세로 배치 */
+#lifestyleRecommendationResults{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:18px;
+  align-items:stretch;
+}
+#lifestyleRecommendationResults .lifestyle-algorithm-block{
+  width:100%;
+  min-width:0;
+  height:100%;
+  margin-top:0;
+  display:grid;
+  grid-template-rows:auto 1fr;
+}
+#lifestyleRecommendationResults .lifestyle-ml-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  grid-template-rows:repeat(3,minmax(0,auto));
+  align-content:start;
+  gap:14px;
+}
+#lifestyleRecommendationResults .lifestyle-ml-card{
+  width:100%;
+  min-width:0;
+}
+#lifestyleRecommendationResults .lifestyle-algorithm-heading{
+  align-items:flex-start;
+  flex-direction:column;
+  gap:8px;
+}
+#lifestyleRecommendationResults .lifestyle-algorithm-heading>p{
+  max-width:none;
+  text-align:left;
+}
+#lifestyleRecommendationResults .lifestyle-algorithm-tag{
+  text-transform:none;
+  letter-spacing:0;
+}
+@media(max-width:1100px){
+  #lifestyleRecommendationResults{
+    grid-template-columns:1fr;
+  }
+}
+
+
+/* Lifestyle AI/ML 문구 한글(영문) 표기 보완 */
+.lifestyle-guide-panel h3 small,
+.lifestyle-result-heading h3 small{
+  display:block;
+  margin-top:4px;
+  color:#7b8ca0;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.02em;
+}
+.formula-card small{
+  display:block;
+  font-size:10px;
+  font-weight:700;
+  line-height:1.6;
+  opacity:.92;
+}
+.lifestyle-guide-list strong em{
+  display:block;
+  margin-top:3px;
+  color:#7b8ca0;
+  font-size:10px;
+  font-style:normal;
+  font-weight:700;
+}
+.lifestyle-algorithm-tag{
+  display:inline-grid;
+  gap:2px;
+  padding:7px 10px;
+}
+.lifestyle-label-kr,
+.lifestyle-label-en,
+.lifestyle-title-kr,
+.lifestyle-title-en{
+  display:block;
+}
+.lifestyle-label-kr{
+  font-size:9px;
+  font-weight:900;
+}
+.lifestyle-label-en{
+  font-size:8px;
+  font-weight:700;
+  opacity:.82;
+}
+.lifestyle-algorithm-heading h4{
+  display:grid;
+  gap:4px;
+}
+.lifestyle-title-kr{
+  font-size:18px;
+  font-weight:800;
+}
+.lifestyle-title-en{
+  color:#708198;
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:.01em;
+}
+@media(max-width:720px){
+  .lifestyle-guide-panel h3 small,
+  .lifestyle-result-heading h3 small,
+  .lifestyle-title-en{
+    font-size:10px;
+  }
+}
+
+
+/* Lifestyle 관심 지역 vs 경기도 추천 범위 안내 */
+.lifestyle-selected-region-summary{
+  margin:0 0 18px;
+  padding:18px 20px;
+  border:1px solid #cfe0f6;
+  border-radius:16px;
+  background:#f8fbff;
+}
+.lifestyle-selected-region-head{
+  display:grid;
+  grid-template-columns:minmax(180px,.6fr) minmax(0,1.4fr);
+  gap:18px;
+  align-items:start;
+}
+.lifestyle-selected-region-head h4{
+  margin:4px 0 0;
+  color:#17304f;
+  font-size:20px;
+}
+.lifestyle-selected-region-head h4 small{
+  display:block;
+  margin-top:4px;
+  color:#8290a1;
+  font-size:10px;
+  font-weight:700;
+}
+.lifestyle-selected-region-head p{
+  margin:0;
+  color:#5f7087;
+  font-size:10px;
+  line-height:1.7;
+}
+.lifestyle-selected-region-head p strong{color:#2468e8}
+.lifestyle-selected-model-grid{
+  display:grid;
+  margin-top:14px;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:9px;
+}
+.lifestyle-selected-model{
+  display:flex;
+  min-height:42px;
+  padding:9px 11px;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  border:1px solid #dce6f1;
+  border-radius:10px;
+  background:#fff;
+}
+.lifestyle-selected-model span{
+  color:#5e6d80;
+  font-size:9px;
+  font-weight:800;
+}
+.lifestyle-selected-model strong{
+  color:#7d8998;
+  font-size:9px;
+}
+.lifestyle-selected-model.is-in-top3{
+  border-color:#9fc0ff;
+  background:#f2f7ff;
+}
+.lifestyle-selected-model.is-in-top3 strong{color:#2468e8}
+.lifestyle-selected-region-note{
+  margin:10px 0 0;
+  color:#7b899a;
+  font-size:9px;
+  line-height:1.6;
+}
+.lifestyle-selected-region-note i{
+  margin-right:5px;
+  color:#2468e8;
+}
+
+/* 모델별 TOP3 점수 미니 시각화 */
+.lifestyle-top3-visual{
+  margin:0 0 14px;
+  padding:12px;
+  border:1px solid #e1e8f1;
+  border-radius:12px;
+  background:#fbfdff;
+}
+.lifestyle-top3-visual-title{
+  display:flex;
+  margin-bottom:9px;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:8px;
+}
+.lifestyle-top3-visual-title strong{
+  color:#40516a;
+  font-size:10px;
+}
+.lifestyle-top3-visual-title small{
+  color:#8a98a8;
+  font-size:8px;
+  font-weight:700;
+}
+.lifestyle-top3-bar-row{
+  display:grid;
+  grid-template-columns:38px 54px minmax(0,1fr) 34px;
+  align-items:center;
+  gap:7px;
+}
+.lifestyle-top3-bar-row+.lifestyle-top3-bar-row{margin-top:7px}
+.lifestyle-top3-bar-rank{
+  color:#2468e8;
+  font-size:8px;
+  font-weight:900;
+}
+.lifestyle-top3-bar-row strong{
+  overflow:hidden;
+  color:#53647b;
+  font-size:9px;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.lifestyle-top3-bar-track{
+  overflow:hidden;
+  height:6px;
+  border-radius:999px;
+  background:#e8eef6;
+}
+.lifestyle-top3-bar-track i{
+  display:block;
+  height:100%;
+  border-radius:inherit;
+  background:#2d6feb;
+}
+.lifestyle-top3-bar-row em{
+  color:#5e6d80;
+  font-size:8px;
+  font-style:normal;
+  font-weight:900;
+  text-align:right;
+}
+@media(max-width:720px){
+  .lifestyle-selected-region-head{grid-template-columns:1fr}
+  .lifestyle-selected-model-grid{grid-template-columns:1fr}
+}
+
+
+/* Lifestyle 선택지역 수치 비교 보완 */
+.lifestyle-selected-region-summary{
+  padding:15px 18px;
+}
+.lifestyle-selected-region-head{
+  grid-template-columns:minmax(180px,.5fr) minmax(0,1.5fr);
+}
+.lifestyle-top3-bar-row{
+  grid-template-columns:42px 54px minmax(0,1fr) 34px;
+  position:relative;
+}
+.lifestyle-top3-bar-row.is-selected-region{
+  margin:-2px -4px 0;
+  padding:9px 4px;
+  grid-template-columns:42px 54px minmax(0,1fr) 34px;
+  border:1px solid #9fc0ff;
+  border-radius:9px;
+  background:#f0f6ff;
+}
+.lifestyle-top3-bar-row.is-selected-region .lifestyle-top3-bar-rank{
+  color:#fff;
+  background:#2468e8;
+  border-radius:999px;
+  padding:3px 5px;
+  text-align:center;
+}
+.lifestyle-top3-bar-row.is-selected-region strong{
+  color:#17304f;
+  font-weight:900;
+}
+.lifestyle-top3-bar-row.is-selected-region .lifestyle-top3-bar-track{
+  background:#dbe8fb;
+}
+.lifestyle-top3-bar-row.is-selected-region em{
+  color:#2468e8;
+  font-weight:900;
+}
+.lifestyle-top3-bar-row.is-selected-region small{
+  position:absolute;
+  right:4px;
+  bottom:-14px;
+  color:#708198;
+  font-size:7px;
+  font-weight:800;
+}
+.lifestyle-top3-separator{
+  margin:16px 0 9px;
+  border-top:1px dashed #d6e0eb;
+}
+
+
+/* 선택지역 + TOP3 비교 최종 정렬 */
+.lifestyle-top3-visual{
+  padding:12px 13px 13px;
+  border-color:#d7e3f2;
+  background:#fff;
+}
+.lifestyle-top3-visual-title{
+  align-items:flex-start;
+}
+.lifestyle-top3-visual-title>div{display:grid;gap:2px}
+.lifestyle-top3-visual-title>em{
+  color:#718096;
+  font-size:8px;
+  font-style:normal;
+  font-weight:800;
+}
+.lifestyle-top3-bar-row.is-selected-region{
+  margin:0;
+  padding:9px 6px;
+  box-shadow:0 4px 12px rgba(36,104,232,.06);
+}
+.lifestyle-top3-bar-row.is-selected-region small{
+  right:6px;
+  bottom:-13px;
+}
+.lifestyle-top3-separator{
+  margin:17px 0 10px;
+}
+
+/* Lifestyle 입력 카드와 안내 카드 높이 통일 */
+@media(min-width:981px){
+  .lifestyle-layout{align-items:stretch}
+  .lifestyle-preference-panel,
+  .lifestyle-guide-panel{
+    height:100%;
+  }
+  .lifestyle-guide-panel{
+    display:flex;
+    flex-direction:column;
+  }
+  .lifestyle-guide-panel .lifestyle-data-trust{
+    margin-top:auto;
+  }
+}
+
+/* Lifestyle 선택지역 9개 생활지표 시각화 */
+.lifestyle-selected-feature-visual{
+  margin-top:16px;
+  padding:15px 16px;
+  border:1px solid #dce7f5;
+  border-radius:13px;
+  background:#fff;
+}
+.lifestyle-selected-feature-title{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:13px;
+}
+.lifestyle-selected-feature-title strong,
+.lifestyle-selected-feature-title small{
+  display:block;
+}
+.lifestyle-selected-feature-title strong{
+  color:#27425f;
+  font-size:12px;
+}
+.lifestyle-selected-feature-title small{
+  margin-top:3px;
+  color:#8996a6;
+  font-size:8px;
+  font-weight:700;
+}
+.lifestyle-selected-feature-title>span{
+  color:#708198;
+  font-size:8px;
+  font-weight:800;
+  white-space:nowrap;
+}
+.lifestyle-selected-feature-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:11px 14px;
+}
+.lifestyle-selected-feature-item{
+  min-width:0;
+}
+.lifestyle-selected-feature-label{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin-bottom:5px;
+}
+.lifestyle-selected-feature-label span{
+  overflow:hidden;
+  color:#52647a;
+  font-size:9px;
+  font-weight:800;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.lifestyle-selected-feature-label strong{
+  flex:0 0 auto;
+  color:#2468e8;
+  font-size:10px;
+}
+.lifestyle-selected-feature-bar{
+  display:block;
+  overflow:hidden;
+  height:7px;
+  border-radius:999px;
+  background:#e7edf5;
+}
+.lifestyle-selected-feature-bar i{
+  display:block;
+  height:100%;
+  border-radius:inherit;
+  background:#2d6feb;
+}
+.lifestyle-selected-feature-note{
+  margin:12px 0 0;
+  color:#7d8a9a;
+  font-size:8px;
+  line-height:1.55;
+}
+.lifestyle-selected-feature-note i{
+  margin-right:5px;
+  color:#2468e8;
+}
+@media(max-width:720px){
+  .lifestyle-selected-feature-grid{grid-template-columns:1fr}
+  .lifestyle-selected-feature-title{align-items:flex-start;flex-direction:column;gap:5px}
+}
+
+/* 방문 매물 카드 영역과 방문 일정 카드 높이 정렬 */
+@media(min-width:981px){
+  .visit-layout{
+    align-items:stretch;
+  }
+  .available-rooms{
+    height:100%;
+    grid-auto-rows:1fr;
+    align-content:stretch;
+  }
+  .visit-room-card{
+    height:100%;
+  }
+  .visit-layout>.connect-form{
+    height:100%;
+    display:flex;
+    flex-direction:column;
+  }
+  .visit-layout>.connect-form>.button:last-child{
+    margin-top:auto;
+  }
+}
+
+/* 선택지역 9개 지표: 지역 수준과 사용자 중요도 비교 */
+.lifestyle-selected-feature-legend{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:14px;
+  margin:-4px 0 12px;
+  color:#6f7f91;
+  font-size:8px;
+  font-weight:800;
+}
+.lifestyle-selected-feature-legend span{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+}
+.lifestyle-selected-feature-legend i{
+  display:inline-block;
+  width:13px;
+  height:5px;
+  border-radius:999px;
+}
+.lifestyle-selected-feature-legend i.is-region{
+  background:#2d6feb;
+}
+.lifestyle-selected-feature-legend i.is-preference{
+  background:var(--green);
+}
+.lifestyle-selected-feature-item{
+  padding:10px;
+  border:1px solid #e3eaf3;
+  border-radius:10px;
+  background:#fbfdff;
+}
+.lifestyle-selected-feature-label{
+  margin-bottom:8px;
+}
+.lifestyle-selected-feature-label span{
+  color:#334a64;
+  font-size:10px;
+  font-weight:900;
+}
+.lifestyle-selected-feature-metric+.lifestyle-selected-feature-metric{
+  margin-top:8px;
+}
+.lifestyle-selected-feature-metric-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin-bottom:4px;
+}
+.lifestyle-selected-feature-metric-head span{
+  color:#748397;
+  font-size:8px;
+  font-weight:800;
+}
+.lifestyle-selected-feature-metric-head strong{
+  color:#53647b;
+  font-size:8px;
+  font-weight:900;
+}
+.lifestyle-selected-feature-bar.is-region i{
+  background:#2d6feb;
+}
+.lifestyle-selected-feature-bar.is-preference{
+  height:6px;
+  background:#e5f1ec;
+}
+.lifestyle-selected-feature-bar.is-preference i{
+  background:var(--green);
+}
+.lifestyle-selected-feature-item[data-weight-level="0"] .lifestyle-selected-feature-bar.is-preference i{
+  min-width:0;
+}
+.lifestyle-selected-feature-item[data-weight-level="4"],
+.lifestyle-selected-feature-item[data-weight-level="5"]{
+  border-color:#cfe4db;
+  background:#f8fcfa;
+}
+@media(max-width:720px){
+  .lifestyle-selected-feature-legend{
+    justify-content:flex-start;
+    flex-wrap:wrap;
+  }
+}
+
+
+/* 선택지역 9개 지표: 내 중요도를 먼저, 더 진하게 표시 */
+.lifestyle-selected-feature-metric.is-preference-metric{
+  padding:7px 8px;
+  border-radius:8px;
+  background:#eef5ff;
+}
+.lifestyle-selected-feature-metric.is-preference-metric .lifestyle-selected-feature-metric-head span,
+.lifestyle-selected-feature-metric.is-preference-metric .lifestyle-selected-feature-metric-head strong{
+  color:#174ea6;
+  font-weight:900;
+}
+.lifestyle-selected-feature-bar.is-preference{
+  background:#d8e7ff;
+}
+.lifestyle-selected-feature-bar.is-preference i{
+  opacity:1;
+  filter:saturate(1.25) brightness(.82);
+}
+.lifestyle-selected-feature-metric.is-region-metric{
+  opacity:.78;
+}
+.lifestyle-selected-feature-metric.is-region-metric .lifestyle-selected-feature-metric-head{
+  font-weight:700;
+}
+.lifestyle-selected-feature-bar.is-region i{
+  opacity:.72;
+}

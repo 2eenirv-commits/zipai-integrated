@@ -1,0 +1,90 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '4.1.1'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.onrender'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-flyway'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+	compileOnly 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	runtimeOnly 'com.mysql:mysql-connector-j'
+	runtimeOnly 'org.flywaydb:flyway-mysql'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-data-jdbc-test'
+	testImplementation 'org.springframework.boot:spring-boot-starter-security-test'
+	testImplementation 'org.springframework.boot:spring-boot-starter-thymeleaf-test'
+	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+	testCompileOnly 'org.projectlombok:lombok'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	testAnnotationProcessor 'org.projectlombok:lombok'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+// ZipAI Safety public-data import tasks (JDBC only; no JPA/Hibernate)
+tasks.register('importSafetyFacilities', JavaExec) {
+    group = 'safety'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'com.onrender.zipai.safety.tools.ImportSafetyFacilities'
+}
+
+tasks.register('geocodePoliceFacilities', JavaExec) {
+    group = 'safety'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'com.onrender.zipai.safety.tools.GeocodePoliceFacilities'
+    if (project.hasProperty('geocodeLimit')) {
+        args "--limit=${project.property('geocodeLimit')}"
+    }
+    if (project.hasProperty('geocodeDelayMs')) {
+        args "--delay-ms=${project.property('geocodeDelayMs')}"
+    }
+    if (project.hasProperty('geocodeRetryFailed') && project.property('geocodeRetryFailed').toBoolean()) {
+        args '--retry-failed'
+    }
+}
+
+tasks.register('importRegionalSafetyIndex', JavaExec) {
+    group = 'safety'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'com.onrender.zipai.safety.tools.ImportRegionalSafetyIndex'
+}
+
+tasks.register('importSeoulSafetyData', JavaExec) {
+    group = 'safety'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'com.onrender.zipai.safety.tools.ImportSeoulSafetyData'
+}
+
+tasks.register('importGyeonggiCrimeStatistics', JavaExec) {
+    group = 'safety'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'com.onrender.zipai.safety.tools.ImportGyeonggiCrimeStatistics'
+}
+
+tasks.register('importGyeonggiWomenSafetyData', JavaExec) {
+    group = 'safety'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'com.onrender.zipai.safety.tools.ImportGyeonggiWomenSafetyData'
+}

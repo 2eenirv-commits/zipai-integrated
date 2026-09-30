@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="ko" id="pageTop">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZipAI | 찜한 매물</title>
+  <link rel="stylesheet" href="/static/css/common.css"><link rel="stylesheet" href="/static/css/header.css?v=20260916-10"><link rel="stylesheet" href="/static/css/footer.css?v=20260916-10"><link rel="stylesheet" href="/static/css/auth.css"><link rel="stylesheet" href="/static/css/property-management.css?v=20260921-2">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"><script src="/static/js/auth.js" defer></script>
+</head>
+<body class="has-zipai-footer"><div class="zipai-header"></div>
+<main class="property-manage-shell"><section id="favoritePageHero" class="manage-hero" hidden><p class="eyebrow">FAVORITES</p><h1>찜한 매물</h1><p>로그인 계정에 저장한 실제 매물을 조건별로 다시 확인합니다.</p></section>
+<section id="favoriteLoginGate" class="manage-card login-required-card" hidden><strong>로그인 후 사용 가능합니다.</strong></section>
+<section id="favoriteContent" class="manage-card" hidden><div class="favorites-toolbar"><span id="favoriteSummary">찜한 매물을 불러오는 중입니다.</span><a class="primary-link" href="/">전체 매물 보기</a></div>
+<div id="favoriteFilters" class="favorite-filters" hidden><label>매물 검색<input id="favoriteQuery" type="search" placeholder="매물명, 지역, 주소"></label><label>건물 유형<select id="favoriteBuilding"><option value="all">전체</option><option value="아파트">아파트</option><option value="주택">주택</option><option value="오피스텔">오피스텔</option><option value="빌라">빌라</option><option value="상가주택">상가주택</option><option value="기타">기타</option></select></label><label>거래 유형<select id="favoriteDeal"><option value="all">전체</option><option value="SALE">매매</option><option value="JEONSE">전세</option><option value="MONTHLY">월세</option></select></label></div>
+<div id="favoriteGrid" class="favorite-grid" aria-live="polite"></div><div id="favoriteEmpty" class="empty-state" hidden><i class="fa-regular fa-heart"></i><strong id="favoriteEmptyTitle">아직 찜한 매물이 없습니다.</strong><p id="favoriteEmptyText">전체 매물에서 마음에 드는 매물을 찜해 보세요.</p><a id="favoriteEmptyAction" class="primary-link" href="/">매물 보러 가기</a></div></section></main>
+<footer class="zipai-footer"></footer><script src="/static/js/property-favorites.js?v=20260921-2" defer></script><script src="/static/js/common-layout.js?v=20260916-10" defer></script></body></html>

@@ -1,0 +1,20 @@
+/* ZipAI Chatbot - Phase 1 */
+.zipai-chatbot{position:fixed;right:1.5rem;bottom:1.5rem;z-index:1200;font-family:"Noto Sans KR","IBM Plex Sans KR",sans-serif}
+.zipai-chatbot-launcher{width:3.75rem;height:3.75rem;border:0;border-radius:50%;background:#175f7a;color:#fff;box-shadow:0 .75rem 2rem rgba(15,61,78,.25);cursor:pointer;font-size:1.35rem}
+.zipai-chatbot-launcher:hover,.zipai-chatbot-launcher:focus-visible{background:#0f4f67}
+.zipai-chatbot-panel{position:absolute;right:0;bottom:4.6rem;width:min(23rem,calc(100vw - 2rem));height:min(34rem,calc(100vh - 7rem));display:flex;flex-direction:column;overflow:hidden;border:1px solid #d9e5ea;border-radius:1rem;background:#fff;box-shadow:0 1rem 3rem rgba(31,54,66,.22)}
+.zipai-chatbot-panel[hidden]{display:none}
+.zipai-chatbot-header{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1rem 1.05rem;background:#175f7a;color:#fff}
+.zipai-chatbot-header-copy strong{display:block;font-size:1rem}.zipai-chatbot-header-copy small{display:block;margin-top:.15rem;opacity:.85;font-size:.75rem}
+.zipai-chatbot-close{border:0;background:transparent;color:#fff;cursor:pointer;font-size:1.2rem}
+.zipai-chatbot-messages{flex:1;overflow-y:auto;padding:1rem;background:#f7fafb}
+.zipai-chatbot-message{max-width:86%;margin-bottom:.7rem;padding:.72rem .85rem;border-radius:.85rem;line-height:1.55;font-size:.88rem;white-space:pre-wrap;word-break:keep-all}
+.zipai-chatbot-message.bot{margin-right:auto;border:1px solid #dbe8ed;background:#fff;color:#263840}.zipai-chatbot-message.user{margin-left:auto;background:#175f7a;color:#fff}
+.zipai-chatbot-action{display:inline-flex;align-items:center;margin-top:.55rem;padding:.48rem .7rem;border-radius:.55rem;background:#e9f4f8;color:#175f7a;font-weight:800;text-decoration:none;font-size:.8rem}
+.zipai-chatbot-quick{display:flex;flex-wrap:wrap;gap:.4rem;padding:0 1rem .8rem;background:#f7fafb}
+.zipai-chatbot-quick button{border:1px solid #bdd3dc;border-radius:999px;background:#fff;color:#175f7a;padding:.42rem .65rem;cursor:pointer;font-size:.76rem;font-weight:700}
+.zipai-chatbot-form{display:flex;gap:.5rem;padding:.8rem;border-top:1px solid #e1eaee;background:#fff}
+.zipai-chatbot-input{flex:1;min-width:0;border:1px solid #cbd9df;border-radius:.65rem;padding:.7rem .75rem;outline:none;font:inherit}
+.zipai-chatbot-input:focus{border-color:#175f7a;box-shadow:0 0 0 .18rem rgba(23,95,122,.12)}
+.zipai-chatbot-send{flex:0 0 auto;border:0;border-radius:.65rem;background:#175f7a;color:#fff;padding:0 .9rem;cursor:pointer;font-weight:800}.zipai-chatbot-send:disabled{opacity:.55;cursor:default}
+@media (max-width:640px){.zipai-chatbot{right:1rem;bottom:1rem}.zipai-chatbot-panel{position:fixed;inset:auto .75rem 5.3rem .75rem;width:auto;height:min(32rem,calc(100vh - 7rem))}}

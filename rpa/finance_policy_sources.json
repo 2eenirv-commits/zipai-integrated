@@ -1,0 +1,50 @@
+[
+  {
+    "policyName": "내집마련 디딤돌 대출",
+    "sourceName": "주택도시기금",
+    "sourceUrl": "https://nhuf.molit.go.kr/",
+    "keyword": "내집마련 디딤돌"
+  },
+  {
+    "policyName": "신혼부부 전용 구입자금",
+    "sourceName": "주택도시기금",
+    "sourceUrl": "https://nhuf.molit.go.kr/",
+    "keyword": "신혼부부 전용 구입자금"
+  },
+  {
+    "policyName": "청년 주택드림 대출",
+    "sourceName": "주택도시기금",
+    "sourceUrl": "https://nhuf.molit.go.kr/",
+    "keyword": "청년 주택드림"
+  },
+  {
+    "policyName": "버팀목 전세자금대출",
+    "sourceName": "서울주거포털",
+    "sourceUrl": "https://housing.seoul.go.kr/site/main/content/sh01_070400",
+    "keyword": "버팀목전세자금"
+  },
+  {
+    "policyName": "신혼부부 전용 전세자금",
+    "sourceName": "주택도시기금",
+    "sourceUrl": "https://nhuf.molit.go.kr/",
+    "keyword": "신혼부부 전용 전세자금"
+  },
+  {
+    "policyName": "청년 전용 버팀목 전세자금대출",
+    "sourceName": "서울주거포털",
+    "sourceUrl": "https://housing.seoul.go.kr/site/main/content/sh01_070400",
+    "keyword": "청년전용 버팀목전세자금"
+  },
+  {
+    "policyName": "주거안정 월세대출",
+    "sourceName": "서울주거포털",
+    "sourceUrl": "https://housing.seoul.go.kr/site/main/content/sh01_070400",
+    "keyword": "월세대출"
+  },
+  {
+    "policyName": "청년 전용 보증부월세 대출",
+    "sourceName": "마이홈포털",
+    "sourceUrl": "https://m.myhome.go.kr/hws/mbl/cont/selectYouthPolicyWarrantyMonthlyLoanView.do",
+    "keyword": "청년전용 보증부월세대출"
+  }
+]

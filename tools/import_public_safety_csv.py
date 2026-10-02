@@ -59,7 +59,14 @@ def detect_files(raw_dir):
     cctv = next((path for path in files if "CCTV" in path.name.upper()), None)
     police = next((path for path in files if "지구대" in path.name or "파출소" in path.name or "경찰" in path.name), None)
     safety_bell = next((path for path in files if "비상벨" in path.name), None)
-    street_light = next((path for path in files if path.name == "전국보안등정보표준데이터_api.csv"), None)
+    street_light = next(
+        (
+            path
+            for path in files
+            if path.name in ["전국보안등정보표준데이터_api.csv", "전국보안등정보표준데이터.csv"]
+        ),
+        None,
+    )
     return cctv, police, safety_bell, street_light
 
 
@@ -83,8 +90,8 @@ def process_cctv(path):
     normalized = normalized[normalized["address"] != ""]
     address_missing = raw_count - len(normalized)
     coordinate_missing = int(normalized["latitude"].isna().sum() + normalized["longitude"].isna().sum())
-    invalid_coordinates = int((~is_valid_coordinate(normalized)).sum())
-    normalized = normalized[is_valid_coordinate(normalized)]
+    invalid_coordinates = int((~is_korea_wgs84_coordinate(normalized)).sum())
+    normalized = normalized[is_korea_wgs84_coordinate(normalized)]
     normalized = normalized.drop_duplicates(subset=["source_id"])
     dedup_removed = before_dedup - address_missing - invalid_coordinates - len(normalized)
     output = PROCESSED_DIR / "cctv_processed.csv"
@@ -170,16 +177,29 @@ def process_safety_bell(path):
 def process_street_light(path):
     frame = read_csv(path)
     raw_count = len(frame)
-    latitude = to_number(frame["latitude"])
-    longitude = to_number(frame["longitude"])
+    korean_headers = "위도" in frame.columns
+    latitude_column = "위도" if korean_headers else "latitude"
+    longitude_column = "경도" if korean_headers else "longitude"
+    road_address_column = "소재지도로명주소" if korean_headers else "rdnmadr"
+    lot_address_column = "소재지지번주소" if korean_headers else "lnmadr"
+    name_column = "보안등위치명" if korean_headers else "lmpLcNm"
+    institution_column = "제공기관코드" if korean_headers else "insttCode"
+    source_date_column = "데이터기준일자" if korean_headers else "referenceDate"
+
+    latitude = to_number(frame[latitude_column])
+    longitude = to_number(frame[longitude_column])
     valid_coordinate = latitude.between(33, 39) & longitude.between(124, 132)
     normal_coordinate_count = int(valid_coordinate.sum())
     excluded_coordinate_count = raw_count - normal_coordinate_count
 
-    address = frame["rdnmadr"].where(frame["rdnmadr"].notna() & (frame["rdnmadr"].map(clean_text) != ""), frame["lnmadr"])
-    name = frame["lmpLcNm"].map(clean_text).replace("", "보안등")
+    address = frame[road_address_column].where(
+        frame[road_address_column].notna()
+        & (frame[road_address_column].map(clean_text) != ""),
+        frame[lot_address_column],
+    )
+    name = frame[name_column].map(clean_text).replace("", "보안등")
     address_clean = address.map(clean_text)
-    source_updated_at = frame["referenceDate"].map(clean_text)
+    source_updated_at = frame[source_date_column].map(clean_text)
 
     normalized = pd.DataFrame({
         "source_id": [
@@ -192,8 +212,8 @@ def process_street_light(path):
                 row.longitude,
             )
             for row in pd.DataFrame({
-                "insttCode": frame["insttCode"].map(clean_text),
-                "lmpLcNm": frame["lmpLcNm"].map(clean_text),
+                "insttCode": frame[institution_column].map(clean_text),
+                "lmpLcNm": frame[name_column].map(clean_text),
                 "address": address_clean,
                 "latitude": latitude.map(lambda value: "" if pd.isna(value) else f"{value:.8f}"),
                 "longitude": longitude.map(lambda value: "" if pd.isna(value) else f"{value:.8f}"),
@@ -291,7 +311,7 @@ def process_raw(raw_dir, only="all"):
     if only in ["all", "street-light"] and street_light:
         outputs.append(process_street_light(street_light))
     elif only in ["all", "street-light"]:
-        print("전국보안등정보표준데이터_api.csv를 찾지 못했습니다.")
+        print("전국보안등정보표준데이터 CSV를 찾지 못했습니다.")
     print("\n생성 파일:")
     for output in outputs:
         print(output)

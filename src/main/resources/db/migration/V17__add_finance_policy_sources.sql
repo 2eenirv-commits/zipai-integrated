@@ -1,8 +1,16 @@
 ALTER TABLE finance_policies
-  ADD COLUMN source_name VARCHAR(100) NULL AFTER description,
-  ADD COLUMN source_url VARCHAR(1000) NULL AFTER source_name,
-  ADD COLUMN source_checked_at DATETIME(6) NULL AFTER source_url,
-  ADD COLUMN source_hash VARCHAR(64) NULL AFTER source_checked_at,
+  ADD COLUMN source_name VARCHAR(100) NULL AFTER description;
+
+ALTER TABLE finance_policies
+  ADD COLUMN source_url VARCHAR(1000) NULL AFTER source_name;
+
+ALTER TABLE finance_policies
+  ADD COLUMN source_checked_at DATETIME(6) NULL AFTER source_url;
+
+ALTER TABLE finance_policies
+  ADD COLUMN source_hash VARCHAR(64) NULL AFTER source_checked_at;
+
+ALTER TABLE finance_policies
   ADD COLUMN update_status VARCHAR(20) NOT NULL DEFAULT 'current' AFTER source_hash;
 
 CREATE TABLE finance_policy_update_candidates (

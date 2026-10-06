@@ -121,7 +121,7 @@ MAX_PAGES = max(1, min(int(env("PROPERTY_CRAWL_MAX_PAGES", "1") or "1"), 50))
 REQUEST_DELAY = max(0.0, float(env("PROPERTY_CRAWL_DELAY_SECONDS", "0.8") or "0.8"))
 
 # MOLIT official actual-transaction API
-MOLIT_API_URL = "https://apis.data.go.kr/1613000/RTMSDataSvcAptTrade/getRTMSDataSvcAptTrade"
+MOLIT_API_URL = "https://apis.data.go.kr/1613000/RTMSDataSvcAptTradeDev/getRTMSDataSvcAptTradeDev"
 MOLIT_KEY = env("MOLIT_SERVICE_KEY")
 MOLIT_KEY_FORMAT = env("MOLIT_SERVICE_KEY_FORMAT", "auto").lower()
 MOLIT_LAWD_CD = env("MOLIT_LAWD_CD", "41117")  # 예: 수원시 영통구

@@ -567,6 +567,15 @@ def xml_item_to_dict(item: ET.Element) -> dict[str, str]:
     return out
 
 
+def validate_molit_response(root: ET.Element) -> None:
+    result_code = (root.findtext(".//resultCode") or "").strip()
+    result_msg = (root.findtext(".//resultMsg") or "").strip()
+    if result_code not in ("000", "00"):
+        code = result_code or "MISSING_RESULT_CODE"
+        detail = f": {result_msg}" if result_msg else ""
+        raise RuntimeError(f"MOLIT API error {code}{detail}")
+
+
 def first(d: dict[str, str], *keys: str) -> str:
     for key in keys:
         v = d.get(key)
@@ -707,10 +716,7 @@ def crawl_molit(max_regions: int | None = None, resume: bool = False) -> tuple[l
                     root = ET.fromstring(response.text)
                 except ET.ParseError as exc:
                     raise RuntimeError("XML 파싱 실패") from exc
-                result_code = root.findtext(".//resultCode") or ""
-                result_msg = root.findtext(".//resultMsg") or ""
-                if result_code not in ("", "000", "00"):
-                    raise RuntimeError(f"MOLIT API error {result_code}: {result_msg}")
+                validate_molit_response(root)
 
                 items = root.findall(".//item")
                 stats.pages += 1

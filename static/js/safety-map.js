@@ -14,7 +14,7 @@
     light: '#ca8a04', women: '#9333ea'
   };
   const state = {
-    map: null, mapAdapter: null, circle: null, centerMarker: null, infoWindow: null,
+    map: null, circle: null, centerMarker: null, infoWindow: null,
     entries: [], primaryFacilities: [], womenFacilities: [],
     center: null, radiusMeters: 500, ready: false, initialization: null
   };
@@ -45,31 +45,31 @@
   }
 
   function latLng(value) {
-    return new naver.maps.LatLng(Number(value.latitude), Number(value.longitude));
+    return new kakao.maps.LatLng(Number(value.latitude), Number(value.longitude));
   }
 
-  function waitForNaver() {
-    if (window.naver && window.naver.maps) return Promise.resolve();
-    if (window.__zipaiNaverMapLoadError) return Promise.reject(new Error('NAVER Maps SDK ' + window.__zipaiNaverMapLoadError));
-    if (window.__zipaiNaverMapPromise) return window.__zipaiNaverMapPromise;
+  function waitForKakao() {
+    if (window.kakao && window.kakao.maps) return Promise.resolve();
+    if (window.__zipaiKakaoMapLoadError) return Promise.reject(new Error('Kakao Maps SDK ' + window.__zipaiKakaoMapLoadError));
+    if (window.__zipaiKakaoMapPromise) return window.__zipaiKakaoMapPromise;
     return new Promise(function (resolve, reject) {
       let finished = false;
       const timer = window.setTimeout(function () {
         if (finished) return;
         finished = true;
-        reject(new Error('NAVER Maps SDK timeout'));
+        reject(new Error('Kakao Maps SDK timeout'));
       }, 10000);
-      document.addEventListener('zipai:naver-map-ready', function () {
+      document.addEventListener('zipai:kakao-map-ready', function () {
         if (finished) return;
         finished = true;
         window.clearTimeout(timer);
         resolve();
       }, { once: true });
-      document.addEventListener('zipai:naver-map-error', function () {
+      document.addEventListener('zipai:kakao-map-error', function () {
         if (finished) return;
         finished = true;
         window.clearTimeout(timer);
-        reject(new Error('NAVER Maps SDK load failed'));
+        reject(new Error('Kakao Maps SDK load failed'));
       }, { once: true });
     });
   }
@@ -77,32 +77,22 @@
   function ensureMap() {
     if (state.ready) return Promise.resolve(state.map);
     if (state.initialization) return state.initialization;
-    setStatus('네이버 지도를 불러오는 중입니다.', '잠시만 기다려 주세요.', false);
-    state.initialization = waitForNaver().then(function () {
-      if (!window.L || typeof window.L.map !== 'function') {
-        throw new Error('NAVER map adapter is unavailable');
-      }
+    setStatus('카카오 지도를 불러오는 중입니다.', '잠시만 기다려 주세요.', false);
+    state.initialization = waitForKakao().then(function () {
       const canvasRect = canvas.getBoundingClientRect();
       if (canvasRect.width < 1 || canvasRect.height < 1) {
-        throw new Error('NAVER map container has no visible size: '
+        throw new Error('Kakao map container has no visible size: '
           + Math.round(canvasRect.width) + 'x' + Math.round(canvasRect.height));
       }
       const initial = validCenter(state.center) || { latitude: 37.5665, longitude: 126.9780 };
-      state.mapAdapter = window.L.map(canvas, {
-        zoomControl: false,
-        minZoom: 7,
-        maxZoom: 19
-      }).setView([initial.latitude, initial.longitude], 14);
-      window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19
-      }).addTo(state.mapAdapter);
-      state.map = state.mapAdapter._native;
-      state.map.setOptions({
-        scrollWheel: false,
-        disableKineticPan: true,
-        keyboardShortcuts: false
+      state.map = new kakao.maps.Map(canvas, {
+        center: latLng(initial),
+        level: 6
       });
-      naver.maps.Event.addListener(state.map, 'click', closeFacilityOverlay);
+      if (typeof state.map.setMinLevel === 'function') state.map.setMinLevel(1);
+      if (typeof state.map.setMaxLevel === 'function') state.map.setMaxLevel(13);
+      state.map.setZoomable(false);
+      kakao.maps.event.addListener(state.map, 'click', closeFacilityOverlay);
       state.ready = true;
       host.classList.remove('is-map-unavailable');
       if (state.center) renderCurrentState();
@@ -110,7 +100,7 @@
       [0, 250, 600].forEach(function (delay) {
         window.setTimeout(function () {
           if (!state.ready || !state.map) return;
-          state.mapAdapter.invalidateSize();
+          state.map.relayout();
           if (state.center) state.map.setCenter(latLng(state.center));
         }, delay);
       });
@@ -118,12 +108,12 @@
     }).catch(function (error) {
       state.initialization = null;
       host.classList.add('is-map-unavailable');
-      const sdkError = window.__zipaiNaverMapLoadError;
+      const sdkError = window.__zipaiKakaoMapLoadError;
       const message = sdkError
         ? '지도 인증키와 Web 서비스 URL을 확인해 주세요.'
         : '지도 실행 중 오류가 발생했습니다. 브라우저 콘솔을 확인해 주세요.';
       console.error('[ZipAI Safety Map]', error);
-      setStatus('네이버 지도를 불러오지 못했습니다.', message, true);
+      setStatus('카카오 지도를 불러오지 못했습니다.', message, true);
       return null;
     });
     return state.initialization;
@@ -151,10 +141,17 @@
     return '여성안전시설';
   }
 
-  function markerContent(type) {
+  function markerImage(type) {
     const symbols = { cctv: '●', police: '◆', bell: '!', light: '✦', women: '♥' };
-    return '<span class="safety-map-marker" style="--marker-color:' + markerColors[type] + '">'
-      + '<span>' + symbols[type] + '</span></span>';
+    const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="36" height="42" viewBox="0 0 36 42">'
+      + '<path fill="' + markerColors[type] + '" stroke="#fff" stroke-width="2" d="M18 1C8.6 1 1 8.6 1 18c0 12.2 17 23 17 23s17-10.8 17-23C35 8.6 27.4 1 18 1z"/>'
+      + '<text x="18" y="23" text-anchor="middle" font-size="15" font-weight="800" fill="#fff">'
+      + symbols[type] + '</text></svg>';
+    return new kakao.maps.MarkerImage(
+      'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg),
+      new kakao.maps.Size(36, 42),
+      { offset: new kakao.maps.Point(18, 42) }
+    );
   }
 
   function clearMarkers() {
@@ -166,18 +163,14 @@
   function createMarker(facility, type) {
     const position = validCenter(facility);
     if (!position) return null;
-    const marker = new naver.maps.Marker({
+    const marker = new kakao.maps.Marker({
       position: latLng(position),
-      icon: {
-        content: markerContent(type),
-        size: new naver.maps.Size(36, 42),
-        anchor: new naver.maps.Point(18, 42)
-      },
+      image: markerImage(type),
       title: (facility.name || typeLabel(facility, type)) + ' · ' + typeLabel(facility, type),
       clickable: true,
       map: activeFilters.has(type) ? state.map : null
     });
-    naver.maps.Event.addListener(marker, 'click', function () {
+    kakao.maps.event.addListener(marker, 'click', function () {
       openFacilityOverlay(marker, facility, type);
     });
     return { marker: marker, facility: facility, type: type };
@@ -205,21 +198,19 @@
 
   function renderCenter() {
     if (state.centerMarker) state.centerMarker.setMap(null);
-    state.centerMarker = new naver.maps.Marker({
+    state.centerMarker = new kakao.maps.CustomOverlay({
       position: latLng(state.center),
       map: state.map,
       zIndex: 100,
-      icon: {
-        content: '<div class="safety-search-center" title="검색 위치"><span></span><strong>검색 위치</strong></div>',
-        size: new naver.maps.Size(80, 36),
-        anchor: new naver.maps.Point(40, 18)
-      }
+      content: '<div class="safety-search-center" title="검색 위치"><span></span><strong>검색 위치</strong></div>',
+      xAnchor: 0.5,
+      yAnchor: 0.5
     });
   }
 
   function updateRadiusCircle() {
     if (state.circle) state.circle.setMap(null);
-    state.circle = new naver.maps.Circle({
+    state.circle = new kakao.maps.Circle({
       map: state.map,
       center: latLng(state.center),
       radius: state.radiusMeters,
@@ -232,11 +223,10 @@
   function fitBounds() {
     const latDelta = state.radiusMeters / 111320;
     const lngDelta = state.radiusMeters / (111320 * Math.max(0.25, Math.cos(state.center.latitude * Math.PI / 180)));
-    const bounds = new naver.maps.LatLngBounds(
-      new naver.maps.LatLng(state.center.latitude - latDelta, state.center.longitude - lngDelta),
-      new naver.maps.LatLng(state.center.latitude + latDelta, state.center.longitude + lngDelta)
-    );
-    state.map.fitBounds(bounds, { top: 56, right: 56, bottom: 88, left: 56 });
+    const bounds = new kakao.maps.LatLngBounds();
+    bounds.extend(new kakao.maps.LatLng(state.center.latitude - latDelta, state.center.longitude - lngDelta));
+    bounds.extend(new kakao.maps.LatLng(state.center.latitude + latDelta, state.center.longitude + lngDelta));
+    state.map.setBounds(bounds, 56, 56, 88, 56);
   }
 
   function renderCurrentState() {
@@ -256,14 +246,14 @@
       + '<span class="safety-facility-type">' + escapeHtml(typeLabel(facility, type)) + '</span><strong>' + escapeHtml(name) + '</strong>'
       + '<p>' + escapeHtml(facility.address || '주소 정보 없음') + '</p><span>검색 위치에서 ' + escapeHtml(String(facility.distanceMeters == null ? '-' : facility.distanceMeters)) + 'm</span>'
       + (source ? '<small>' + escapeHtml(source) + '</small>' : '') + '</article>';
-    state.infoWindow = new naver.maps.InfoWindow({
+    state.infoWindow = new kakao.maps.CustomOverlay({
+      position: marker.getPosition(),
       content: content,
-      borderWidth: 0,
-      backgroundColor: 'transparent',
-      anchorSize: new naver.maps.Size(0, 0),
-      pixelOffset: new naver.maps.Point(0, -12)
+      xAnchor: 0.5,
+      yAnchor: 1.2,
+      zIndex: 200
     });
-    state.infoWindow.open(state.map, marker);
+    state.infoWindow.setMap(state.map);
     window.setTimeout(function () {
       const close = host.querySelector('.safety-overlay-close');
       if (close) close.addEventListener('click', closeFacilityOverlay, { once: true });
@@ -271,7 +261,7 @@
   }
 
   function closeFacilityOverlay() {
-    if (state.infoWindow) state.infoWindow.close();
+    if (state.infoWindow) state.infoWindow.setMap(null);
     state.infoWindow = null;
   }
 
@@ -305,8 +295,7 @@
   function relayout() {
     ensureMap().then(function (map) {
       if (!map) return;
-      if (state.mapAdapter) state.mapAdapter.invalidateSize();
-      else naver.maps.Event.trigger(map, 'resize');
+      map.relayout();
       if (state.center) {
         map.setCenter(latLng(state.center));
         fitBounds();
@@ -339,8 +328,8 @@
     button.addEventListener('click', function () {
       if (!state.ready) return;
       const action = button.dataset.mapAction;
-      if (action === 'zoom-in') state.map.setZoom(Math.min(19, state.map.getZoom() + 1));
-      if (action === 'zoom-out') state.map.setZoom(Math.max(7, state.map.getZoom() - 1));
+      if (action === 'zoom-in') state.map.setLevel(Math.max(1, state.map.getLevel() - 1), { animate: true });
+      if (action === 'zoom-out') state.map.setLevel(Math.min(13, state.map.getLevel() + 1), { animate: true });
       if (action === 'recenter' && state.center) {
         state.map.panTo(latLng(state.center));
         fitBounds();
@@ -371,8 +360,7 @@
       if (!state.ready || !canvas.clientWidth || !canvas.clientHeight) return;
       if (resizeFrame) window.cancelAnimationFrame(resizeFrame);
       resizeFrame = window.requestAnimationFrame(function () {
-        if (state.mapAdapter) state.mapAdapter.invalidateSize();
-        else naver.maps.Event.trigger(state.map, 'resize');
+        state.map.relayout();
         if (state.center) state.map.setCenter(latLng(state.center));
       });
     });

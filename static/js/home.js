@@ -828,7 +828,7 @@
   function initMap() {
     if (!realMapElement) return;
     if (!window.L) {
-      realMapElement.innerHTML = '<div class="map-fallback">지도를 불러오지 못했습니다. 인터넷 연결 또는 Leaflet CDN 로딩 상태를 확인해 주세요.</div>';
+      realMapElement.innerHTML = '<div class="map-fallback">카카오 지도를 불러오지 못했습니다. JavaScript 키와 허용 도메인을 확인해 주세요.</div>';
       return;
     }
 
@@ -849,12 +849,6 @@
       inertia: true,
       easeLinearity: 0.18
     }).setView(defaultMapCenter, 13);
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      bounds: southKoreaBounds,
-      maxZoom: 19,
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(propertyMap);
 
     propertyMap.on('zoomend', renderMarkers);
     window.addEventListener('load', function () { refreshMapLayout(true); });

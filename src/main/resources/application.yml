@@ -75,6 +75,8 @@ server:
   forward-headers-strategy: framework
 
 zipai:
+  maps:
+    kakao-javascript-key: ${KAKAO_MAP_JAVASCRIPT_KEY:}
   finance:
     import-token: ${FINANCE_IMPORT_TOKEN:}
   safety:

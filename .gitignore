@@ -6,11 +6,17 @@ certs/
 *.pem
 *.key
 *.p12
+*.pfx
 *.jks
+credentials/
+secrets/
+credentials.*
+secrets.*
 
 # Gradle and Java build output
 .gradle/
 build/
+bin/
 out/
 *.class
 
@@ -46,6 +52,8 @@ rpa/data/**
 !rpa/data/templates/
 !rpa/data/templates/**
 data/
+*_processed.csv
+*_tidb_import*.csv
 
 # User-uploaded property images
 static/img/properties/
@@ -54,7 +62,16 @@ uploads/
 # Local database exports and backups
 /zipai_backup.sql
 /*_backup.sql
+/zipai-full.sql
+/*_dump.sql
+/*-dump.sql
+*.sql.gz
+*.dump
 /team-deploy/
+
+# Local deployment helpers
+/wake.bat
+/tatus --ignored
 
 # Local delivery archives
 *.zip

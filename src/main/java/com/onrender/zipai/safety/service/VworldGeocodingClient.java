@@ -2,11 +2,13 @@ package com.onrender.zipai.safety.service;
 
 import tools.jackson.databind.JsonNode;
 import java.net.URI;
+import java.net.http.HttpClient;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.JdkClientHttpRequestFactory;
@@ -23,19 +25,25 @@ public class VworldGeocodingClient implements SafetyCoordinateGeocoder {
     private static final Logger log = LoggerFactory.getLogger(VworldGeocodingClient.class);
 
     private final String apiKey;
+    private final String apiDomain;
     private final RestClient restClient;
 
     @Autowired
     public VworldGeocodingClient(SafetyProperties properties) {
-        this(properties.vworldApiKey(), defaultRestClient());
+        this(properties.vworldApiKey(), properties.vworldApiDomain(), defaultRestClient());
     }
 
     public VworldGeocodingClient(String apiKey) {
-        this(apiKey, defaultRestClient());
+        this(apiKey, "", defaultRestClient());
     }
 
     VworldGeocodingClient(String apiKey, RestClient restClient) {
-        this.apiKey = apiKey;
+        this(apiKey, "", restClient);
+    }
+
+    VworldGeocodingClient(String apiKey, String apiDomain, RestClient restClient) {
+        this.apiKey = apiKey == null ? "" : apiKey.strip();
+        this.apiDomain = apiDomain == null ? "" : apiDomain.strip();
         this.restClient = restClient;
     }
 
@@ -60,10 +68,10 @@ public class VworldGeocodingClient implements SafetyCoordinateGeocoder {
     }
 
     private Optional<Coordinate> callVworld(String query, SearchAttempt attempt) {
-        URI requestUri = buildRequestUri(apiKey, query, attempt.type(), attempt.category());
-        URI maskedUri = buildRequestUri("***", query, attempt.type(), attempt.category());
+        URI requestUri = buildRequestUri(apiKey, apiDomain, query, attempt.type(), attempt.category());
+        URI maskedUri = buildRequestUri("***", apiDomain, query, attempt.type(), attempt.category());
         try {
-            ResponseEntity<JsonNode> entity = restClient.get().uri(requestUri).retrieve().toEntity(JsonNode.class);
+            ResponseEntity<JsonNode> entity = request(requestUri).retrieve().toEntity(JsonNode.class);
             JsonNode root = entity.getBody();
             JsonNode response = root == null ? null : root.path("response");
             String status = response == null ? "" : response.path("status").asText("");
@@ -122,10 +130,10 @@ public class VworldGeocodingClient implements SafetyCoordinateGeocoder {
     }
 
     private Optional<AdministrativeArea> lookupAdministrativeArea(double latitude, double longitude) {
-        URI requestUri = buildAddressUri(apiKey, latitude, longitude);
-        URI maskedUri = buildAddressUri("***", latitude, longitude);
+        URI requestUri = buildAddressUri(apiKey, apiDomain, latitude, longitude);
+        URI maskedUri = buildAddressUri("***", apiDomain, latitude, longitude);
         try {
-            ResponseEntity<JsonNode> entity = restClient.get().uri(requestUri).retrieve().toEntity(JsonNode.class);
+            ResponseEntity<JsonNode> entity = request(requestUri).retrieve().toEntity(JsonNode.class);
             Optional<AdministrativeArea> area = parseAdministrativeArea(entity.getBody());
             if (area.isEmpty()) {
                 log.warn(
@@ -153,6 +161,10 @@ public class VworldGeocodingClient implements SafetyCoordinateGeocoder {
     }
 
     static URI buildRequestUri(String apiKey, String query, String type, String category) {
+        return buildRequestUri(apiKey, "", query, type, category);
+    }
+
+    static URI buildRequestUri(String apiKey, String apiDomain, String query, String type, String category) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString("https://api.vworld.kr/req/search")
             .queryParam("service", "search")
             .queryParam("request", "search")
@@ -168,11 +180,18 @@ public class VworldGeocodingClient implements SafetyCoordinateGeocoder {
         if (category != null) {
             builder.queryParam("category", category);
         }
+        if (apiDomain != null && !apiDomain.isBlank()) {
+            builder.queryParam("domain", apiDomain.strip());
+        }
         return builder.build().encode(StandardCharsets.UTF_8).toUri();
     }
 
     static URI buildAddressUri(String apiKey, double latitude, double longitude) {
-        return UriComponentsBuilder.fromUriString("https://api.vworld.kr/req/address")
+        return buildAddressUri(apiKey, "", latitude, longitude);
+    }
+
+    static URI buildAddressUri(String apiKey, String apiDomain, double latitude, double longitude) {
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString("https://api.vworld.kr/req/address")
             .queryParam("service", "address")
             .queryParam("request", "getAddress")
             .queryParam("version", "2.0")
@@ -182,8 +201,19 @@ public class VworldGeocodingClient implements SafetyCoordinateGeocoder {
             .queryParam("type", "both")
             .queryParam("zipcode", "false")
             .queryParam("simple", "false")
-            .queryParam("key", apiKey)
-            .build().encode(StandardCharsets.UTF_8).toUri();
+            .queryParam("key", apiKey);
+        if (apiDomain != null && !apiDomain.isBlank()) {
+            builder.queryParam("domain", apiDomain.strip());
+        }
+        return builder.build().encode(StandardCharsets.UTF_8).toUri();
+    }
+
+    private RestClient.RequestHeadersSpec<?> request(URI requestUri) {
+        RestClient.RequestHeadersSpec<?> request = restClient.get().uri(requestUri);
+        if (!apiDomain.isBlank()) {
+            request.header(HttpHeaders.REFERER, apiDomain);
+        }
+        return request;
     }
 
     private static String snippet(String value) {
@@ -197,8 +227,11 @@ public class VworldGeocodingClient implements SafetyCoordinateGeocoder {
     }
 
     private static RestClient defaultRestClient() {
-        JdkClientHttpRequestFactory requestFactory = new JdkClientHttpRequestFactory();
-        requestFactory.setReadTimeout(Duration.ofSeconds(3));
+        HttpClient httpClient = HttpClient.newBuilder()
+            .connectTimeout(Duration.ofSeconds(5))
+            .build();
+        JdkClientHttpRequestFactory requestFactory = new JdkClientHttpRequestFactory(httpClient);
+        requestFactory.setReadTimeout(Duration.ofSeconds(10));
         return RestClient.builder().requestFactory(requestFactory).build();
     }
 

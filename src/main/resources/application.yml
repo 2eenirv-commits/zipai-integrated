@@ -81,6 +81,7 @@ zipai:
     import-token: ${FINANCE_IMPORT_TOKEN:}
   safety:
     vworld-api-key: ${VWORLD_API_KEY:}
+    vworld-api-domain: ${VWORLD_API_DOMAIN:}
     default-radius-meters: ${SAFETY_DEFAULT_RADIUS_METERS:500}
     max-radius-meters: ${SAFETY_MAX_RADIUS_METERS:2000}
   oauth:

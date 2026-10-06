@@ -5,6 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "zipai.safety")
 public record SafetyProperties(
     String vworldApiKey,
+    String vworldApiDomain,
     int defaultRadiusMeters,
     int maxRadiusMeters
 ) {

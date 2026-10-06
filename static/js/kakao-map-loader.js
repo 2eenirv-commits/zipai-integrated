@@ -61,7 +61,7 @@
       }
 
       const sdk = document.createElement('script');
-      sdk.src = '//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=' + encodeURIComponent(javaScriptKey);
+      sdk.src = '//dapi.kakao.com/v2/maps/sdk.js?autoload=false&libraries=services&appkey=' + encodeURIComponent(javaScriptKey);
       sdk.async = true;
       sdk.dataset.zipaiKakaoSdk = 'true';
       sdk.onload = finishLoading;

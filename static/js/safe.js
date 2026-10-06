@@ -181,11 +181,108 @@
   }
 
   async function resolveLocation(query) {
-    const searchResponse = await fetch('/api/safety/search?q=' + encodeURIComponent(query));
-    if (!searchResponse.ok) throw new Error(await message(searchResponse));
-    const data = await searchResponse.json();
-    if (!data.location) throw new Error('검색 결과가 없습니다.');
-    return data.location;
+    await waitForKakaoServices();
+    const geocoder = new kakao.maps.services.Geocoder();
+    const addressResult = await searchKakaoAddress(geocoder, query);
+    if (addressResult) return enrichAdministrativeArea(geocoder, toAddressLocation(addressResult, query));
+
+    const placeResult = await searchKakaoPlace(query);
+    return enrichAdministrativeArea(geocoder, toPlaceLocation(placeResult, query));
+  }
+
+  async function waitForKakaoServices() {
+    try {
+      if (window.__zipaiKakaoMapPromise) await window.__zipaiKakaoMapPromise;
+    } catch (error) {
+      throw kakaoSearchError();
+    }
+    if (!window.kakao || !window.kakao.maps || !window.kakao.maps.services) {
+      throw kakaoSearchError();
+    }
+  }
+
+  function searchKakaoAddress(geocoder, query) {
+    return new Promise(function (resolve, reject) {
+      geocoder.addressSearch(query, function (results, status) {
+        if (status === kakao.maps.services.Status.OK && results.length) {
+          resolve(results[0]);
+          return;
+        }
+        if (status === kakao.maps.services.Status.ZERO_RESULT) {
+          resolve(null);
+          return;
+        }
+        reject(kakaoSearchError());
+      });
+    });
+  }
+
+  function searchKakaoPlace(query) {
+    const places = new kakao.maps.services.Places();
+    return new Promise(function (resolve, reject) {
+      places.keywordSearch(query, function (results, status) {
+        if (status === kakao.maps.services.Status.OK && results.length) {
+          resolve(results[0]);
+          return;
+        }
+        if (status === kakao.maps.services.Status.ZERO_RESULT) {
+          reject(new Error('검색 결과가 없습니다.'));
+          return;
+        }
+        reject(kakaoSearchError());
+      });
+    });
+  }
+
+  function toAddressLocation(item, query) {
+    const address = item.road_address || item.address || {};
+    return {
+      id: null,
+      name: query,
+      address: address.address_name || item.address_name || query,
+      latitude: Number(item.y),
+      longitude: Number(item.x),
+      sourceName: 'Kakao Maps JavaScript SDK',
+      sidoName: address.region_1depth_name || null,
+      sigunguName: address.region_2depth_name || null
+    };
+  }
+
+  function toPlaceLocation(item, query) {
+    return {
+      id: null,
+      name: item.place_name || query,
+      address: item.road_address_name || item.address_name || item.place_name || query,
+      latitude: Number(item.y),
+      longitude: Number(item.x),
+      sourceName: 'Kakao Maps JavaScript SDK',
+      sidoName: null,
+      sigunguName: null
+    };
+  }
+
+  function enrichAdministrativeArea(geocoder, location) {
+    if (!Number.isFinite(location.latitude) || !Number.isFinite(location.longitude)) {
+      return Promise.reject(kakaoSearchError());
+    }
+    if (location.sidoName && location.sigunguName) return Promise.resolve(location);
+
+    return new Promise(function (resolve) {
+      geocoder.coord2RegionCode(location.longitude, location.latitude, function (results, status) {
+        if (status === kakao.maps.services.Status.OK && results.length) {
+          const region = results.find(function (item) { return item.region_type === 'H'; }) || results[0];
+          location.sidoName = region.region_1depth_name || location.sidoName;
+          location.sigunguName = region.region_2depth_name || location.sigunguName;
+        }
+        resolve(location);
+      });
+    });
+  }
+
+  function kakaoSearchError() {
+    return new Error(navigator.onLine === false
+      ? '네트워크 오류로 주소를 검색하지 못했습니다.'
+      : '카카오 주소검색에 실패했습니다. 잠시 후 다시 시도해 주세요.');
   }
 
   function updateDetailMapLinks(query, meters, features, regionalSelected, crimeSelected, womenSelected) {

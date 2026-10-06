@@ -86,7 +86,9 @@ public class SafetyService {
             score.metrics(),
             score.summary(),
             facilities,
-            "공공데이터 적재 DB + VWorld 주소검색",
+            lat != null && lng != null
+                ? "공공데이터 적재 DB + 입력 좌표 기반 분석"
+                : "공공데이터 적재 DB + VWorld 주소검색",
             dataUpdatedAt
         );
     }

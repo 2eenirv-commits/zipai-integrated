@@ -119,11 +119,12 @@ public class VworldGeocodingClient implements SafetyCoordinateGeocoder {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "주소 검색 공공 API 호출에 실패했습니다.");
         } catch (Exception error) {
             log.warn(
-                "VWorld geocoding request failed type={} category={} uri={}",
+                "VWorld geocoding request failed type={} category={} uri={} exception={} message={}",
                 attempt.type(),
                 attempt.category(),
                 maskedUri.toASCIIString(),
-                error
+                error.getClass().getName(),
+                safeExceptionMessage(error)
             );
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "주소 검색 공공 API 호출에 실패했습니다.");
         }
@@ -219,6 +220,16 @@ public class VworldGeocodingClient implements SafetyCoordinateGeocoder {
     private static String snippet(String value) {
         if (value == null || value.isBlank()) return "";
         return value.length() <= 500 ? value : value.substring(0, 500);
+    }
+
+    private String safeExceptionMessage(Exception error) {
+        String message = error.getMessage();
+        if (message == null || message.isBlank()) return "";
+        if (!apiKey.isBlank()) {
+            message = message.replace(apiKey, "***");
+        }
+        message = message.replaceAll("(?i)([?&]key=)[^&\\s]+", "$1***");
+        return snippet(message.replace('\r', ' ').replace('\n', ' '));
     }
 
     private static String text(JsonNode node, String field) {

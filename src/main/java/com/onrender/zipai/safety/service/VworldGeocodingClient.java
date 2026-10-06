@@ -10,6 +10,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.JdkClientHttpRequestFactory;
 import org.slf4j.Logger;
@@ -23,6 +24,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Service
 public class VworldGeocodingClient implements SafetyCoordinateGeocoder {
     private static final Logger log = LoggerFactory.getLogger(VworldGeocodingClient.class);
+    private static final String USER_AGENT = "zipai-integrated/1.0";
 
     private final String apiKey;
     private final String apiDomain;
@@ -87,7 +89,7 @@ public class VworldGeocodingClient implements SafetyCoordinateGeocoder {
                     attempt.type(),
                     attempt.category(),
                     maskedUri.toASCIIString(),
-                    snippet(root == null ? "" : root.toString())
+                    safeLogValue(root == null ? "" : root.toString())
                 );
                 return Optional.empty();
             }
@@ -108,13 +110,14 @@ public class VworldGeocodingClient implements SafetyCoordinateGeocoder {
             ));
         } catch (RestClientResponseException error) {
             log.warn(
-                "VWorld geocoding HTTP error status={} type={} category={} uri={} body={}",
+                "VWorld geocoding HTTP error status={} type={} category={} uri={} exception={} message={} body={}",
                 error.getStatusCode(),
                 attempt.type(),
                 attempt.category(),
                 maskedUri.toASCIIString(),
-                snippet(error.getResponseBodyAsString()),
-                error
+                error.getClass().getName(),
+                safeExceptionMessage(error),
+                safeLogValue(error.getResponseBodyAsString())
             );
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "주소 검색 공공 API 호출에 실패했습니다.");
         } catch (Exception error) {
@@ -140,14 +143,29 @@ public class VworldGeocodingClient implements SafetyCoordinateGeocoder {
                 log.warn(
                     "VWorld address lookup did not include administrative structure httpStatus={} uri={} body={}",
                     entity.getStatusCode(), maskedUri.toASCIIString(),
-                    snippet(entity.getBody() == null ? "" : entity.getBody().toString())
+                    safeLogValue(entity.getBody() == null ? "" : entity.getBody().toString())
                 );
             }
             return area;
+        } catch (RestClientResponseException error) {
+            log.warn(
+                "VWorld address lookup HTTP error status={} uri={} exception={} message={} body={}",
+                error.getStatusCode(),
+                maskedUri.toASCIIString(),
+                error.getClass().getName(),
+                safeExceptionMessage(error),
+                safeLogValue(error.getResponseBodyAsString())
+            );
+            return Optional.empty();
         } catch (Exception error) {
             // Coordinates and the display address are still useful if the supplementary
             // structured-address lookup is temporarily unavailable.
-            log.warn("VWorld address lookup failed uri={}", maskedUri.toASCIIString(), error);
+            log.warn(
+                "VWorld address lookup failed uri={} exception={} message={}",
+                maskedUri.toASCIIString(),
+                error.getClass().getName(),
+                safeExceptionMessage(error)
+            );
             return Optional.empty();
         }
     }
@@ -210,7 +228,10 @@ public class VworldGeocodingClient implements SafetyCoordinateGeocoder {
     }
 
     private RestClient.RequestHeadersSpec<?> request(URI requestUri) {
-        RestClient.RequestHeadersSpec<?> request = restClient.get().uri(requestUri);
+        RestClient.RequestHeadersSpec<?> request = restClient.get()
+            .uri(requestUri)
+            .header(HttpHeaders.USER_AGENT, USER_AGENT)
+            .accept(MediaType.APPLICATION_JSON);
         if (!apiDomain.isBlank()) {
             request.header(HttpHeaders.REFERER, apiDomain);
         }
@@ -223,13 +244,17 @@ public class VworldGeocodingClient implements SafetyCoordinateGeocoder {
     }
 
     private String safeExceptionMessage(Exception error) {
-        String message = error.getMessage();
-        if (message == null || message.isBlank()) return "";
+        return safeLogValue(error.getMessage());
+    }
+
+    private String safeLogValue(String value) {
+        if (value == null || value.isBlank()) return "";
+        String sanitized = value;
         if (!apiKey.isBlank()) {
-            message = message.replace(apiKey, "***");
+            sanitized = sanitized.replace(apiKey, "***");
         }
-        message = message.replaceAll("(?i)([?&]key=)[^&\\s]+", "$1***");
-        return snippet(message.replace('\r', ' ').replace('\n', ' '));
+        sanitized = sanitized.replaceAll("(?i)([?&]key=)[^&\\s\"']+", "$1***");
+        return snippet(sanitized.replace('\r', ' ').replace('\n', ' '));
     }
 
     private static String text(JsonNode node, String field) {
@@ -239,6 +264,7 @@ public class VworldGeocodingClient implements SafetyCoordinateGeocoder {
 
     private static RestClient defaultRestClient() {
         HttpClient httpClient = HttpClient.newBuilder()
+            .version(HttpClient.Version.HTTP_1_1)
             .connectTimeout(Duration.ofSeconds(5))
             .build();
         JdkClientHttpRequestFactory requestFactory = new JdkClientHttpRequestFactory(httpClient);

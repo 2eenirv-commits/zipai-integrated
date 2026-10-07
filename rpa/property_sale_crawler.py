@@ -813,13 +813,18 @@ def upload_fingerprint(items: list[dict[str, Any]], source_name: str, source_mod
     return hashlib.sha1(content.encode("utf-8")).hexdigest()
 
 
-def upload(items: list[dict[str, Any]], source_name: str, source_mode: str = MODE) -> dict[str, Any]:
+def upload(
+    items: list[dict[str, Any]],
+    source_name: str,
+    source_mode: str = MODE,
+    upload_state_out: Path = UPLOAD_STATE_OUT,
+) -> dict[str, Any]:
     validate_import_token()
     if not items:
         return {"success": True, "collected": 0, "inserted": 0, "updated": 0, "errors": 0, "batches": 0}
     endpoint = import_endpoint(source_mode)
     fingerprint = upload_fingerprint(items, source_name, source_mode)
-    previous = read_json(UPLOAD_STATE_OUT)
+    previous = read_json(upload_state_out)
     if previous.get("fingerprint") == fingerprint:
         completed = {int(value) for value in previous.get("completedBatches", [])}
         raw_totals = previous.get("totals") if isinstance(previous.get("totals"), dict) else {}
@@ -863,23 +868,27 @@ def upload(items: list[dict[str, Any]], source_name: str, source_mode: str = MOD
         for key in totals:
             totals[key] += int(result.get(key, 0) or 0)
         completed.add(batch_number)
-        write_json_atomic(UPLOAD_STATE_OUT, {
+        write_json_atomic(upload_state_out, {
             "fingerprint": fingerprint, "sourceName": source_name, "sourceMode": source_mode,
             "completedBatches": sorted(completed), "totals": totals, "updatedAt": datetime.now(timezone.utc).isoformat()
         })
     return {"success": totals["errors"] == 0, **totals, "batches": batches, "completedBatches": len(completed)}
 
 
-def load_saved_result() -> tuple[list[dict[str, Any]], str, str]:
-    payload = read_json(OUT)
+def load_saved_result(input_path: Path = OUT) -> tuple[list[dict[str, Any]], str, str]:
+    payload = read_json(input_path)
     items = payload.get("items") if isinstance(payload.get("items"), list) else None
     if items is None:
-        raise RuntimeError(f"업로드할 저장 파일이 없거나 올바르지 않습니다: {OUT}")
+        raise RuntimeError(f"업로드할 저장 파일이 없거나 올바르지 않습니다: {input_path}")
     source_name = str(payload.get("sourceName") or ("MOLIT_APT_TRADE" if payload.get("sourceMode") == "molit" else SOURCE_NAME))
     source_mode = str(payload.get("sourceMode") or MODE).lower()
     if source_mode not in {"molit", "html"}:
         raise RuntimeError("저장 파일의 sourceMode가 올바르지 않습니다.")
     return items, source_name, source_mode
+
+
+def upload_state_path(input_path: Path | None) -> Path:
+    return UPLOAD_STATE_OUT if input_path is None else input_path.with_suffix(".upload-state.json")
 
 
 def validate_html_config(require_token: bool) -> None:
@@ -931,6 +940,11 @@ def main() -> int:
     parser.add_argument("--resume", action="store_true", help="같은 거래월의 완료 지역은 건너뛰고 이어서 수집")
     parser.add_argument("--upload-only", action="store_true", help="재수집 없이 저장된 JSON을 DB로 업로드")
     parser.add_argument(
+        "--input-file",
+        type=Path,
+        help="--upload-only에서 사용할 JSON 경로(미지정 시 기존 processed JSON 사용)",
+    )
+    parser.add_argument(
         "--geocode-only",
         action="store_true",
         help="재수집 없이 저장된 MOLIT JSON의 누락 좌표를 보완하고 변경 건만 DB로 업로드",
@@ -940,6 +954,8 @@ def main() -> int:
         raise SystemExit("PROPERTY_SOURCE_MODE는 html 또는 molit 이어야 합니다.")
     if args.max_regions is not None and args.max_regions < 1:
         raise SystemExit("--max-regions 값은 1 이상이어야 합니다.")
+    if args.input_file is not None and not args.upload_only:
+        raise SystemExit("--input-file은 --upload-only와 함께 사용해야 합니다.")
     if args.check:
         check_backend()
         return 0
@@ -969,8 +985,12 @@ def main() -> int:
         )
         return 0
     if args.upload_only:
-        rows, source_name, saved_mode = load_saved_result()
-        result = upload(rows, source_name, saved_mode)
+        input_path = args.input_file.resolve() if args.input_file is not None else OUT
+        state_path = upload_state_path(input_path if args.input_file is not None else None)
+        rows, source_name, saved_mode = load_saved_result(input_path)
+        print(f"upload_input={input_path}")
+        print(f"upload_state={state_path}")
+        result = upload(rows, source_name, saved_mode, state_path)
         print("import_result=" + json.dumps(result, ensure_ascii=False))
         print(f"run_summary mode={saved_mode} action=upload_only rows={len(rows)} elapsed={time.monotonic() - started_at:.1f}s result=SUCCESS")
         return 0

@@ -74,7 +74,8 @@ def import_csv(path):
                 VALUES (%s, %s, %s, %s, %s, %s, TRUE)
                 ON DUPLICATE KEY UPDATE
                     sido=VALUES(sido), sigungu=VALUES(sigungu), dong=VALUES(dong),
-                    latitude=VALUES(latitude), longitude=VALUES(longitude), active=TRUE
+                    latitude=COALESCE(VALUES(latitude), latitude),
+                    longitude=COALESCE(VALUES(longitude), longitude), active=TRUE
                 """,
                 (
                     area_code, row["sido"].strip(), row["sigungu"].strip(),

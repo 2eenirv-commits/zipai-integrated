@@ -4,8 +4,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.onrender.zipai.domain.LifestyleProperty;
@@ -54,15 +56,46 @@ public class RoomConnectService {
     }
 
     @Transactional(readOnly = true)
-    public List<RoomVisitResponse> getVisits() {
-        return roomVisitRepository.findAllByOrderByVisitIdDesc()
+    public List<RoomVisitResponse> getVisits(Long requesterUserId) {
+        requireAuthenticatedUserId(requesterUserId);
+        return roomVisitRepository.findAllByRequesterUserIdOrderByVisitIdDesc(requesterUserId)
                 .stream()
                 .map(RoomVisitResponse::from)
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<RoomVisitResponse> getManagedVisits(Long ownerUserId) {
+        requireAuthenticatedUserId(ownerUserId);
+        List<String> ownedRoomIds = roomOfferRepository
+                .findAllByOwnerUserIdOrderByOfferIdDesc(ownerUserId)
+                .stream()
+                .map(offer -> "OFFER-" + offer.getOfferId())
+                .toList();
+
+        if (ownedRoomIds.isEmpty()) {
+            return List.of();
+        }
+
+        return roomVisitRepository.findAllByRoomIdInOrderByVisitIdDesc(ownedRoomIds)
+                .stream()
+                .map(RoomVisitResponse::from)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public RoomVisitResponse getVisit(Long requesterUserId, Long visitId) {
+        requireAuthenticatedUserId(requesterUserId);
+        RoomVisit visit = findVisit(visitId);
+        if (!requesterUserId.equals(visit.getRequesterUserId())) {
+            throw forbidden("본인의 방문 예약만 조회할 수 있습니다.");
+        }
+        return RoomVisitResponse.from(visit);
+    }
+
     @Transactional
-    public RoomVisitResponse createVisit(RoomVisitRequest request) {
+    public RoomVisitResponse createVisit(Long requesterUserId, RoomVisitRequest request) {
+        requireAuthenticatedUserId(requesterUserId);
         validateVisitRequest(request);
 
         LifestyleProperty property = lifestylePropertyRepository
@@ -71,6 +104,7 @@ public class RoomConnectService {
                         "현재 등록된 방문 가능 매물이 아닙니다."));
 
         RoomVisit visit = new RoomVisit();
+        visit.setRequesterUserId(requesterUserId);
         visit.setRoomId(property.getPropertyCode());
         visit.setTitle(property.getTitle());
         visit.setVisitDate(request.getDate());
@@ -83,8 +117,10 @@ public class RoomConnectService {
     }
 
     @Transactional
-    public RoomVisitResponse approveVisit(Long visitId) {
+    public RoomVisitResponse approveVisit(Long ownerUserId, Long visitId) {
+        requireAuthenticatedUserId(ownerUserId);
         RoomVisit visit = findVisit(visitId);
+        requireOwnedRoom(ownerUserId, visit);
         requirePending(visit);
 
         boolean slotTaken = roomVisitRepository
@@ -106,8 +142,10 @@ public class RoomConnectService {
     }
 
     @Transactional
-    public RoomVisitResponse rejectVisit(Long visitId) {
+    public RoomVisitResponse rejectVisit(Long ownerUserId, Long visitId) {
+        requireAuthenticatedUserId(ownerUserId);
         RoomVisit visit = findVisit(visitId);
+        requireOwnedRoom(ownerUserId, visit);
         requirePending(visit);
 
         RoomVisit updated = copyVisitWithStatus(visit, REJECTED);
@@ -115,26 +153,30 @@ public class RoomConnectService {
     }
 
     @Transactional(readOnly = true)
-    public List<RoomOfferResponse> getOffers() {
-        return roomOfferRepository.findAllByOrderByOfferIdDesc()
+    public List<RoomOfferResponse> getOffers(Long ownerUserId) {
+        requireAuthenticatedUserId(ownerUserId);
+        return roomOfferRepository.findAllByOwnerUserIdOrderByOfferIdDesc(ownerUserId)
                 .stream()
                 .map(this::toOfferResponse)
                 .toList();
     }
 
     @Transactional
-    public RoomOfferResponse createOffer(RoomOfferRequest request) {
-        return createOffer(request, new MultipartFile[0]);
+    public RoomOfferResponse createOffer(Long ownerUserId, RoomOfferRequest request) {
+        return createOffer(ownerUserId, request, new MultipartFile[0]);
     }
 
     @Transactional
     public RoomOfferResponse createOffer(
+            Long ownerUserId,
             RoomOfferRequest request,
             MultipartFile[] images) {
+        requireAuthenticatedUserId(ownerUserId);
         validateOfferRequest(request);
         validateOfferImages(images);
 
         RoomOffer offer = new RoomOffer();
+        offer.setOwnerUserId(ownerUserId);
         offer.setTitle(request.getTitle().trim());
         offer.setDistrict(request.getDistrict().trim());
         offer.setDeposit(request.getDeposit());
@@ -257,8 +299,44 @@ public class RoomConnectService {
             throw new IllegalArgumentException("방문 요청 번호가 필요합니다.");
         }
         return roomVisitRepository.findById(visitId)
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "방문 요청을 찾을 수 없습니다."));
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "방문 요청을 찾을 수 없습니다."));
+    }
+
+    private void requireOwnedRoom(Long ownerUserId, RoomVisit visit) {
+        Long offerId = parseOfferId(visit.getRoomId());
+        if (offerId == null) {
+            throw forbidden("해당 매물의 소유자만 방문 요청을 처리할 수 있습니다.");
+        }
+
+        boolean ownsRoom = roomOfferRepository.findById(offerId)
+                .map(RoomOffer::getOwnerUserId)
+                .filter(ownerUserId::equals)
+                .isPresent();
+        if (!ownsRoom) {
+            throw forbidden("해당 매물의 소유자만 방문 요청을 처리할 수 있습니다.");
+        }
+    }
+
+    private Long parseOfferId(String roomId) {
+        if (roomId == null || !roomId.matches("^OFFER-[0-9]+$")) {
+            return null;
+        }
+        try {
+            return Long.valueOf(roomId.substring("OFFER-".length()));
+        } catch (NumberFormatException ignored) {
+            return null;
+        }
+    }
+
+    private void requireAuthenticatedUserId(Long userId) {
+        if (userId == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
+        }
+    }
+
+    private ResponseStatusException forbidden(String message) {
+        return new ResponseStatusException(HttpStatus.FORBIDDEN, message);
     }
 
     private void requirePending(RoomVisit visit) {

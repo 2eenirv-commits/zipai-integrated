@@ -14,6 +14,9 @@ public class RoomVisit {
     @Column("visit_id")
     private Long visitId;
 
+    @Column("requester_user_id")
+    private Long requesterUserId;
+
     @Column("room_id")
     private String roomId;
 
@@ -34,6 +37,8 @@ public class RoomVisit {
 
     public Long getVisitId() { return visitId; }
     public void setVisitId(Long visitId) { this.visitId = visitId; }
+    public Long getRequesterUserId() { return requesterUserId; }
+    public void setRequesterUserId(Long requesterUserId) { this.requesterUserId = requesterUserId; }
     public String getRoomId() { return roomId; }
     public void setRoomId(String roomId) { this.roomId = roomId; }
     public String getTitle() { return title; }

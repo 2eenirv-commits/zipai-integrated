@@ -8,5 +8,5 @@ import com.onrender.zipai.domain.RoomOffer;
 
 public interface RoomOfferRepository extends CrudRepository<RoomOffer, Long> {
 
-    List<RoomOffer> findAllByOrderByOfferIdDesc();
+    List<RoomOffer> findAllByOwnerUserIdOrderByOfferIdDesc(Long ownerUserId);
 }

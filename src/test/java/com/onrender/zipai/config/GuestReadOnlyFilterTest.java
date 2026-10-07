@@ -15,15 +15,9 @@ class GuestReadOnlyFilterTest {
 
     @Test
     void guestMutationIsRejectedBeforeController() throws Exception {
-        MockHttpServletRequest request = guestRequest("POST", "/api/properties");
-        MockHttpServletResponse response = new MockHttpServletResponse();
-        MockFilterChain chain = new MockFilterChain();
-
-        filter.doFilter(request, response, chain);
-
-        assertThat(response.getStatus()).isEqualTo(403);
-        assertThat(response.getContentAsString()).contains("게스트 모드에서는 조회만 가능합니다.");
-        assertThat(chain.getRequest()).isNull();
+        assertGuestMutationRejected("POST", "/api/visits");
+        assertGuestMutationRejected("PATCH", "/api/visits/1/approve");
+        assertGuestMutationRejected("POST", "/api/room-offers");
     }
 
     @Test
@@ -50,5 +44,16 @@ class GuestReadOnlyFilterTest {
         session.setAttribute(ZipaiAuthService.GUEST_SESSION, Boolean.TRUE);
         request.setSession(session);
         return request;
+    }
+
+    private void assertGuestMutationRejected(String method, String path) throws Exception {
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        MockFilterChain chain = new MockFilterChain();
+
+        filter.doFilter(guestRequest(method, path), response, chain);
+
+        assertThat(response.getStatus()).isEqualTo(403);
+        assertThat(response.getContentAsString()).contains("게스트 모드에서는 조회만 가능합니다.");
+        assertThat(chain.getRequest()).isNull();
     }
 }

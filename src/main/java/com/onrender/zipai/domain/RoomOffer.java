@@ -13,6 +13,9 @@ public class RoomOffer {
     @Column("offer_id")
     private Long offerId;
 
+    @Column("owner_user_id")
+    private Long ownerUserId;
+
     private String title;
     private String district;
     private Long deposit;
@@ -37,6 +40,8 @@ public class RoomOffer {
 
     public Long getOfferId() { return offerId; }
     public void setOfferId(Long offerId) { this.offerId = offerId; }
+    public Long getOwnerUserId() { return ownerUserId; }
+    public void setOwnerUserId(Long ownerUserId) { this.ownerUserId = ownerUserId; }
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
     public String getDistrict() { return district; }

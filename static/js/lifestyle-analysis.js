@@ -9,6 +9,7 @@
   const offerKey = 'zipaiRoomOffers';
   let visitCache = [];
   let offerCache = [];
+  let guestMode = false;
   const roomList = document.getElementById('availableRooms');
   const visitRegionNotice = document.getElementById('visitRegionNotice');
   const visitForm = document.getElementById('visitForm');
@@ -112,9 +113,33 @@
   }
 
   async function loadServerActivity() {
-    const results = await Promise.all([api('/api/visits'), api('/api/room-offers')]);
-    visitCache = results[0].items || [];
-    offerCache = results[1].items || [];
+    if (guestMode) {
+      visitCache = [{
+        id: 'guest-visit-demo', roomId: 'DEMO-ROOM', title: '게스트 방문예약 데모',
+        date: '2026-10-10', time: '14:00', phone: '010-0000-0000',
+        status: 'pending', manageable: false
+      }];
+      offerCache = [{
+        id: 'guest-offer-demo', title: '게스트 방 내놓기 데모', district: '서울특별시 강남구',
+        moveIn: '2026-11-01', agreement: '데모 데이터', status: 'ready', imageUrls: []
+      }];
+      return;
+    }
+
+    const results = await Promise.all([
+      api('/api/visits'),
+      api('/api/visits/managed'),
+      api('/api/room-offers')
+    ]);
+    const visitsById = new Map();
+    (results[0].items || []).forEach(function (item) {
+      visitsById.set(item.id, { ...item, manageable: false });
+    });
+    (results[1].items || []).forEach(function (item) {
+      visitsById.set(item.id, { ...item, manageable: true });
+    });
+    visitCache = Array.from(visitsById.values()).sort(function (a, b) { return Number(b.id) - Number(a.id); });
+    offerCache = results[2].items || [];
   }
 
 
@@ -583,7 +608,7 @@
     document.getElementById('visitList').innerHTML = visits.length ? visits.map(function (item) {
       const status = item.status || 'pending';
       const statusText = status === 'approved' ? '예약 확정' : status === 'rejected' ? '요청 거절' : '승인 대기';
-      const actions = status === 'pending'
+      const actions = status === 'pending' && item.manageable && !guestMode
         ? '<div class="approval-actions"><button type="button" data-action="approve" data-visit-id="' + item.id + '">승인</button><button type="button" data-action="reject" data-visit-id="' + item.id + '">거절</button></div>'
         : '';
       return '<div class="activity-item"><div><strong>' + escapeHtml(item.title) + '</strong><small>' + escapeHtml(item.date) + ' · ' + escapeHtml(item.time) + ' · ' + escapeHtml(formatPhone(item.phone)) + '</small>' + actions + '</div><span class="activity-status is-' + status + '">' + statusText + '</span></div>';
@@ -680,6 +705,10 @@
 
   visitForm.addEventListener('submit', async function (event) {
     event.preventDefault();
+    if (guestMode) {
+      window.ZipaiAuth.showGuestReadOnlyMessage();
+      return;
+    }
     const data = new FormData(visitForm);
     const room = rooms.find(function (item) { return item.id === data.get('room'); });
     if (!room) {
@@ -712,7 +741,7 @@
     const id = Number(button.dataset.visitId);
     const visits = read(visitKey);
     const visit = visits.find(function (item) { return item.id === id; });
-    if (!visit || (visit.status && visit.status !== 'pending')) return;
+    if (!visit || !visit.manageable || (visit.status && visit.status !== 'pending')) return;
     try {
       const action = button.dataset.action === 'approve' ? 'approve' : 'reject';
       const payload = await api('/api/visits/' + visit.id + '/' + action, { method: 'PATCH', body: '{}' });
@@ -775,6 +804,11 @@
 
   offerForm.addEventListener('submit', async function (event) {
     event.preventDefault();
+
+    if (guestMode) {
+      window.ZipaiAuth.showGuestReadOnlyMessage();
+      return;
+    }
 
     const images = offerImages ? Array.from(offerImages.files || []) : [];
     if (!images.length) {
@@ -856,6 +890,7 @@
 
   renderRooms();
   if (window.ZipaiAuth) await window.ZipaiAuth.ready;
+  guestMode = Boolean(window.ZipaiAuth && window.ZipaiAuth.isGuest && window.ZipaiAuth.isGuest());
   try {
     await loadServerActivity();
   } catch (error) {

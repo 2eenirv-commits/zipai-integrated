@@ -16,26 +16,33 @@ import com.onrender.zipai.dto.lifestyle.ItemsResponse;
 import com.onrender.zipai.dto.lifestyle.RoomOfferRequest;
 import com.onrender.zipai.dto.lifestyle.RoomOfferResponse;
 import com.onrender.zipai.service.RoomConnectService;
+import com.onrender.zipai.service.ZipaiAuthService;
+import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/api/room-offers")
 public class RoomOfferController {
 
     private final RoomConnectService roomConnectService;
+    private final ZipaiAuthService auth;
 
-    public RoomOfferController(RoomConnectService roomConnectService) {
+    public RoomOfferController(RoomConnectService roomConnectService, ZipaiAuthService auth) {
         this.roomConnectService = roomConnectService;
+        this.auth = auth;
     }
 
     @GetMapping
-    public ItemsResponse<RoomOfferResponse> offers() {
-        return new ItemsResponse<>(roomConnectService.getOffers());
+    public ItemsResponse<RoomOfferResponse> offers(HttpSession session) {
+        Long ownerUserId = auth.required(session).getId();
+        return new ItemsResponse<>(roomConnectService.getOffers(ownerUserId));
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ItemResponse<RoomOfferResponse> create(
-            @RequestBody RoomOfferRequest request) {
-        return new ItemResponse<>(roomConnectService.createOffer(request));
+            @RequestBody RoomOfferRequest request,
+            HttpSession session) {
+        Long ownerUserId = auth.required(session).getId();
+        return new ItemResponse<>(roomConnectService.createOffer(ownerUserId, request));
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -50,7 +57,8 @@ public class RoomOfferController {
             @RequestParam String availableTime,
             @RequestParam String agreement,
             @RequestParam(required = false) String description,
-            @RequestParam(required = false, name = "images") MultipartFile[] images) {
+            @RequestParam(required = false, name = "images") MultipartFile[] images,
+            HttpSession session) {
 
         RoomOfferRequest request = new RoomOfferRequest();
         request.setTitle(title);
@@ -64,6 +72,7 @@ public class RoomOfferController {
         request.setAgreement(agreement);
         request.setDescription(description);
 
-        return new ItemResponse<>(roomConnectService.createOffer(request, images));
+        Long ownerUserId = auth.required(session).getId();
+        return new ItemResponse<>(roomConnectService.createOffer(ownerUserId, request, images));
     }
 }

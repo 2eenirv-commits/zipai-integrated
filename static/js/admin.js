@@ -11,15 +11,21 @@
   await auth.ready;
   const user = auth.getUser();
   const isAdmin = Boolean(user && String(user.role || '').toLowerCase() === 'admin');
-  deniedView.hidden = isAdmin;
-  adminView.hidden = !isAdmin;
+  const isGuestDemo = Boolean(auth.isGuest && auth.isGuest(user) && window.location.pathname === '/portfolio/admin');
+  const canView = isAdmin || isGuestDemo;
+  deniedView.hidden = canView;
+  adminView.hidden = !canView;
   switchButton.addEventListener('click', logout);
   logoutButton.addEventListener('click', logout);
   async function logout() {
     await auth.logout();
     window.location.href = auth.resolvePage('login.html');
   }
-  if (!isAdmin) return;
+  if (!canView) return;
+
+  const adminApiBase = isGuestDemo ? '/api/portfolio/admin' : '/api/admin';
+  const guestBanner = document.getElementById('adminGuestBanner');
+  if (guestBanner) guestBanner.hidden = !isGuestDemo;
 
   const searchInput = document.getElementById('adminSearch');
   const categoryFilter = document.getElementById('adminCategoryFilter');
@@ -48,7 +54,7 @@
   let postItems = [];
   let visitItems = [];
   const adminUserId = document.getElementById('adminUserId');
-  if (adminUserId) adminUserId.textContent = user.id || '';
+  if (adminUserId) adminUserId.textContent = isGuestDemo ? '포트폴리오 게스트' : (user.id || '');
 
   function showToast(message) {
     if (!adminToast) return;
@@ -66,6 +72,11 @@
   }
 
   async function api(path, options) {
+    const method = String(options && options.method || 'GET').toUpperCase();
+    if (isGuestDemo && !['GET', 'HEAD', 'OPTIONS'].includes(method)) {
+      showToast('게스트 모드에서는 조회만 가능합니다.');
+      throw new Error('게스트 모드에서는 조회만 가능합니다.');
+    }
     const response = await fetch(path, {
       credentials: 'same-origin',
       headers: options && options.body ? { 'Content-Type': 'application/json' } : {},
@@ -101,7 +112,7 @@
 
   async function loadSummary() {
     try {
-      const payload = await api('/api/admin/summary');
+      const payload = await api(adminApiBase + '/summary');
       setText('adminNewMembers', payload.newMembers || 0);
       setText('adminActiveMembers', payload.activeMembers || 0);
       setText('adminNewInquiries', payload.newInquiries || 0);
@@ -174,7 +185,7 @@
 
   async function load() {
     try {
-      const payload = await api('/api/admin/inquiries');
+      const payload = await api(adminApiBase + '/inquiries');
       items = payload.items || [];
       if (selectedId == null && items.length) selectedId = Number(items[0].id);
       render();
@@ -187,7 +198,7 @@
     const target = document.getElementById('adminPropertyList');
     if (!target) return;
     try {
-      const payload = await api('/api/admin/properties');
+      const payload = await api(adminApiBase + '/properties');
       const properties = Array.isArray(payload.items) ? payload.items : [];
       setText('adminPropertyCount', properties.length + '건');
       pendingPropertyCount = properties.filter(function (item) {
@@ -217,7 +228,7 @@
           button.addEventListener('click', async function () {
             button.disabled = true;
             try {
-              await api('/api/admin/properties/' + item.id + '/status', {
+              await api(adminApiBase + '/properties/' + item.id + '/status', {
                 method: 'PATCH', body: JSON.stringify({ status: status })
               });
               showToast('매물 상태를 변경했습니다.');
@@ -242,7 +253,7 @@
     const target = document.getElementById('adminPostList');
     if (!target) return;
     try {
-      const payload = await api('/api/admin/community/posts');
+      const payload = await api(adminApiBase + '/community/posts');
       postItems = payload.items || [];
       setText('adminPostCount', postItems.length + '건');
       renderPosts();
@@ -280,7 +291,7 @@
           if (!window.confirm('이 게시글을 삭제할까요?')) return;
           remove.disabled = true;
           try {
-            await api('/api/admin/community/posts/' + item.id, { method: 'DELETE' });
+            await api(adminApiBase + '/community/posts/' + item.id, { method: 'DELETE' });
             showToast('게시글을 삭제했습니다.');
             await Promise.all([loadPosts(), loadAudit()]);
           } catch (error) {
@@ -305,7 +316,7 @@
     const target = document.getElementById('adminVisitList');
     if (!target) return;
     try {
-      const payload = await api('/api/admin/visits');
+      const payload = await api(adminApiBase + '/visits');
       visitItems = payload.items || [];
       setText('adminVisitCount', visitItems.length + '건');
       renderVisits();
@@ -346,7 +357,7 @@
       saveButton.addEventListener('click', async function () {
         saveButton.disabled = true;
         try {
-          await api('/api/admin/visits/' + item.id + '/status', {
+          await api(adminApiBase + '/visits/' + item.id + '/status', {
             method: 'PATCH', body: JSON.stringify({ status: select.value })
           });
           showToast('방문 예약 상태를 변경했습니다.');
@@ -368,7 +379,7 @@
     const target = document.getElementById('adminAuditList');
     if (!target) return;
     try {
-      const payload = await api('/api/admin/audit');
+      const payload = await api(adminApiBase + '/audit');
       const auditItems = payload.items || [];
       setText('adminAuditCount', auditItems.length + '건');
       target.replaceChildren();
@@ -396,6 +407,11 @@
   async function loadFinanceUpdates() {
     const target = document.getElementById('adminFinanceUpdates');
     if (!target) return;
+    if (isGuestDemo) {
+      setText('adminFinanceCount', '0건');
+      target.textContent = '게스트 데모에서는 실제 금융정책 검토 데이터에 접근하지 않습니다.';
+      return;
+    }
     try {
       const payload = await api('/api/finance/policy-updates');
       const candidates = (payload.items || []).filter(function (item) { return item.status === 'pending'; });
@@ -463,7 +479,7 @@
     if (saveReplyButton) saveReplyButton.disabled = true;
     if (activeButton) activeButton.textContent = '저장 중...';
     try {
-      await api('/api/admin/inquiries/' + selectedId + '/answer', {
+      await api(adminApiBase + '/inquiries/' + selectedId + '/answer', {
         method: 'PATCH',
         body: JSON.stringify({ status: status, answer: answer })
       });

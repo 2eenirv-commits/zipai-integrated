@@ -3,6 +3,7 @@
 
   const auth = window.ZipaiAuth;
   const form = document.getElementById('loginForm');
+  const guestButton = document.getElementById('guestLoginButton');
   if (!auth || !form) return;
 
   await auth.ready;
@@ -67,4 +68,24 @@
       submit.disabled = false;
     }
   });
+
+  if (guestButton) {
+    guestButton.addEventListener('click', async function () {
+      guestButton.disabled = true;
+      try {
+        await auth.guestLogin();
+        window.location.href = auth.resolvePage('index.html');
+      } catch (error) {
+        let message = form.querySelector('.login-page-error');
+        if (!message) {
+          message = document.createElement('p');
+          message.className = 'login-page-error';
+          form.appendChild(message);
+        }
+        message.textContent = error.message;
+      } finally {
+        guestButton.disabled = false;
+      }
+    });
+  }
 })();

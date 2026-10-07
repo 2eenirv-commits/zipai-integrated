@@ -92,6 +92,7 @@ body { min-height: 100vh; }
 .login-button { min-width: 76px; padding: 0 12px; border: 1px solid #dce4ef; color: #34445b; background: #fff; }
 .login-button:hover { color: var(--color-primary); border-color: rgba(36,104,232,.35); background: #f7faff; transform: translateY(-1px); }
 .login-button.is-authenticated { display: none; }
+.login-button.is-authenticated.is-guest { display: inline-flex; color: #1859cc; border-color: rgba(36,104,232,.35); background: #eef5ff; }
 .mobile-menu-button { display: none; }
 
 /* Desktop full-width mega menu: one shared second-level panel directly below the first-level nav. */

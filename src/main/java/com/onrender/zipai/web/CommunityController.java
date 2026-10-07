@@ -68,10 +68,10 @@ public class CommunityController {
 
     @GetMapping("/posts")
     public Map<String, Object> list(HttpSession session) {
-        ZipaiUser user = auth.required(session);
+        ZipaiUser user = viewer(session);
         List<Map<String, Object>> items = posts.findAllByOrderByCreatedAtDesc().stream()
             .filter(post -> !isBlinded(post))
-            .map(post -> postPayload(post, user.getId()))
+            .map(post -> postPayload(post, user == null ? null : user.getId()))
             .toList();
         return Map.of("items", items);
     }
@@ -115,18 +115,21 @@ public class CommunityController {
     @GetMapping("/posts/{id}")
     @Transactional
     public Map<String, Object> detail(@PathVariable Long id, HttpSession session) {
-        ZipaiUser user = auth.required(session);
+        ZipaiUser user = viewer(session);
         CommunityPost post = posts.findById(id)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다."));
 
-        if (isBlinded(post) && !post.getAuthorId().equals(user.getId()) && !"admin".equals(user.getRole())) {
+        if (isBlinded(post) && (user == null
+            || (!post.getAuthorId().equals(user.getId()) && !"admin".equals(user.getRole())))) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "신고 누적으로 블라인드 처리된 게시글입니다.");
         }
 
-        post.setViews(post.getViews() + 1);
-        post.setUpdatedAt(LocalDateTime.now());
-        post = posts.save(post);
-        return Map.of("item", postPayload(post, user.getId()));
+        if (user != null) {
+            post.setViews(post.getViews() + 1);
+            post.setUpdatedAt(LocalDateTime.now());
+            post = posts.save(post);
+        }
+        return Map.of("item", postPayload(post, user == null ? null : user.getId()));
     }
 
     @PutMapping("/posts/{id}/like")
@@ -146,7 +149,7 @@ public class CommunityController {
 
     @GetMapping("/posts/{id}/comments")
     public Map<String, Object> comments(@PathVariable Long id, HttpSession session) {
-        auth.required(session);
+        viewer(session);
         List<Map<String, Object>> items = comments.findByPostIdOrderByCreatedAtAsc(id).stream()
             .map(this::commentPayload)
             .toList();
@@ -249,7 +252,8 @@ public class CommunityController {
 
     private Map<String, Object> postPayload(CommunityPost post, Long userId) {
         long likes = count("SELECT COUNT(*) FROM community_post_likes WHERE post_id=?", post.getId());
-        long likedCount = count("SELECT COUNT(*) FROM community_post_likes WHERE post_id=? AND user_id=?", post.getId(), userId);
+        long likedCount = userId == null ? 0L
+            : count("SELECT COUNT(*) FROM community_post_likes WHERE post_id=? AND user_id=?", post.getId(), userId);
         long reportCount = reports.countByPostId(post.getId());
         String author = users.findById(post.getAuthorId()).map(ZipaiUser::getUsername).orElse("알 수 없음");
         String imageUrl = jdbc.query(
@@ -291,6 +295,11 @@ public class CommunityController {
 
     private boolean isBlinded(CommunityPost post) {
         return reports.countByPostId(post.getId()) >= BLIND_REPORT_COUNT;
+    }
+
+    private ZipaiUser viewer(HttpSession session) {
+        if (auth.isGuest(session)) return null;
+        return auth.required(session);
     }
 
     private long count(String sql, Object... args) {

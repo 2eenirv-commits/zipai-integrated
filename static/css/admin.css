@@ -1,6 +1,9 @@
 .admin-main { min-height: 760px; padding: 58px 24px 85px; background: #f3f6fa; }
 .admin-container { width: min(1280px, 100%); margin: 0 auto; }
 .admin-view[hidden] { display: none; }
+.admin-guest-banner{display:flex;margin-bottom:20px;padding:14px 17px;border:1px solid #bfd4ff;border-radius:12px;align-items:center;gap:12px;color:#174fae;background:#eef5ff}
+.admin-guest-banner[hidden]{display:none}
+.admin-guest-banner div{display:grid;gap:3px}.admin-guest-banner strong{font-size:13px}.admin-guest-banner span{font-size:11px}
 .admin-heading { display: flex; margin-bottom: 26px; align-items: flex-end; justify-content: space-between; gap: 20px; }
 .admin-eyebrow { margin: 0 0 6px; color: var(--color-primary); font-size: 10px; font-weight: 700; letter-spacing: .16em; }
 .admin-heading h1 { margin: 0; color: var(--color-navy); font-family: var(--font-heading); font-size: 34px; }

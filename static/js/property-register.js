@@ -56,11 +56,16 @@
   async function applyLoginView() {
     if (window.ZipaiAuth) await window.ZipaiAuth.ready;
     const logged = !!(window.ZipaiAuth && window.ZipaiAuth.getUser());
-    loginGate.hidden = logged;
-    formCard.hidden = !logged;
-    myListingsCard.hidden = !logged;
-    pageHero.hidden = !logged;
-    return logged;
+    const guest = Boolean(window.ZipaiAuth && window.ZipaiAuth.isGuest && window.ZipaiAuth.isGuest());
+    loginGate.hidden = logged && !guest;
+    formCard.hidden = !logged || guest;
+    myListingsCard.hidden = !logged || guest;
+    pageHero.hidden = !logged || guest;
+    if (guest) {
+      const message = loginGate.querySelector('strong');
+      if (message) message.textContent = '게스트 모드에서는 매물 등록·수정·삭제를 이용할 수 없습니다.';
+    }
+    return logged && !guest;
   }
 
   function listingPrice(property) {

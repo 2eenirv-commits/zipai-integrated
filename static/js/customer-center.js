@@ -12,6 +12,7 @@
   const statusLabels = { received: '접수', in_progress: '확인 중', answered: '답변 완료' };
   if (window.ZipaiAuth) await window.ZipaiAuth.ready;
   const user = window.ZipaiAuth && window.ZipaiAuth.getUser();
+  const isGuest = Boolean(window.ZipaiAuth && window.ZipaiAuth.isGuest && window.ZipaiAuth.isGuest(user));
 
   if (!form || !list || !empty || !count || !toast) return;
   if (!user) {
@@ -81,6 +82,11 @@
     });
   }
 
+  const guestDemoInquiries = [
+    { category: '매물 이용', status: 'answered', title: '방문 가능 시간 문의 데모', createdAt: '2026-10-05T10:00:00', answer: '개인정보를 포함하지 않은 포트폴리오용 답변입니다.' },
+    { category: '계약 안전', status: 'in_progress', title: '체크리스트 이용 문의 데모', createdAt: '2026-10-06T14:30:00', answer: '' }
+  ];
+
   async function loadHistory() {
     try {
       const payload = await api('/api/inquiries');
@@ -92,6 +98,10 @@
 
   form.addEventListener('submit', async function (event) {
     event.preventDefault();
+    if (isGuest) {
+      showToast('게스트 모드에서는 조회만 가능합니다.');
+      return;
+    }
     if (!form.checkValidity()) {
       form.reportValidity();
       return;
@@ -120,6 +130,13 @@
     }
   });
 
-  if (userMessage) userMessage.textContent = user.id + '님, 무엇을 도와드릴까요?';
-  await loadHistory();
+  if (userMessage) userMessage.textContent = isGuest
+    ? '게스트 모드에서는 비식별 문의 예시를 조회할 수 있습니다.'
+    : user.id + '님, 무엇을 도와드릴까요?';
+  if (isGuest) {
+    if (emailInput) emailInput.value = 'guest@example.invalid';
+    renderHistory(guestDemoInquiries);
+  } else {
+    await loadHistory();
+  }
 })();

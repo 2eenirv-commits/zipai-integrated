@@ -98,6 +98,12 @@
 .login-page-demo i { margin-top: 3px; color: var(--color-primary); }
 .login-page-error{margin:0;padding:11px 13px;border-radius:9px;color:#a52834;background:#fff0f1;font-size:11px;font-weight:700;text-align:center}
 .login-page-submit:disabled{cursor:wait;opacity:.65}
+.guest-login-divider{display:flex;margin-top:20px;align-items:center;gap:12px;color:#8290a3;font-size:10px;font-weight:700}
+.guest-login-divider::before,.guest-login-divider::after{height:1px;flex:1;background:#e2e8f0;content:""}
+.guest-login-button{display:flex;width:100%;min-height:48px;margin-top:12px;border:1px solid #2468e8;border-radius:10px;align-items:center;justify-content:center;gap:8px;color:#1859cc;background:#eef5ff;cursor:pointer;font-size:13px;font-weight:800}
+.guest-login-button:hover{background:#e3edff}
+.guest-login-button:disabled{cursor:wait;opacity:.65}
+.guest-login-note{margin:9px 0 0;color:#718096;font-size:10px;line-height:1.5;text-align:center}
 .social-login{margin-top:22px}
 .social-login[hidden],.social-login-button[hidden]{display:none}
 .social-login-divider{display:flex;align-items:center;gap:12px;color:#8290a3;font-size:10px;font-weight:700}

@@ -33,6 +33,17 @@
   };
   let memoryUser = null;
   let authReady;
+  const nativeFetch = window.fetch.bind(window);
+  const GUEST_READ_ONLY_POSTS = new Set([
+    '/api/lifestyle/recommend',
+    '/api/lifestyle/recommend/ml',
+    '/api/happy-housing/diagnose',
+    '/api/finance/calculate',
+    '/api/chat'
+  ]);
+  const GUEST_AUTH_POSTS = new Set([
+    '/api/auth/guest', '/api/auth/logout'
+  ]);
 
   function getRootPrefix() {
     return window.location.pathname.replace(/\\/g, '/').includes('/templates/') ? '../../' : '';
@@ -70,6 +81,29 @@
       return memoryUser;
     }
   }
+
+  function isGuest(user) {
+    const current = user || getUser();
+    return Boolean(current && (current.guest === true || String(current.role || '').toLowerCase() === 'guest'));
+  }
+
+  function showGuestReadOnlyMessage() {
+    window.alert('게스트 모드에서는 조회만 가능합니다.');
+  }
+
+  window.fetch = function guardedFetch(input, init) {
+    const method = String((init && init.method) || (input && input.method) || 'GET').toUpperCase();
+    if (!isGuest() || ['GET', 'HEAD', 'OPTIONS'].includes(method)) {
+      return nativeFetch(input, init);
+    }
+    const rawUrl = typeof input === 'string' ? input : input && input.url;
+    const path = new URL(rawUrl || '', window.location.origin).pathname;
+    if (GUEST_AUTH_POSTS.has(path) || (method === 'POST' && GUEST_READ_ONLY_POSTS.has(path))) {
+      return nativeFetch(input, init);
+    }
+    showGuestReadOnlyMessage();
+    return Promise.reject(new Error('게스트 모드에서는 조회만 가능합니다.'));
+  };
 
   function storeUser(user) {
     const normalized = { ...user, loginAt: user.loginAt || new Date().toISOString() };
@@ -129,6 +163,11 @@
     return storeUser(payload.user);
   }
 
+  async function guestLogin() {
+    const payload = await requestAuth('guest', { method: 'POST', body: '{}' });
+    return storeUser(payload.user);
+  }
+
   async function signup(data) {
     const payload = await requestAuth('signup', {
       method: 'POST',
@@ -153,11 +192,12 @@
       const label = document.createElement('span');
       button.href = resolvePage(user ? 'mypage.html' : 'login.html');
       button.classList.toggle('is-authenticated', Boolean(user));
+      button.classList.toggle('is-guest', isGuest(user));
       button.setAttribute('aria-label', user ? user.id + ' 계정 페이지로 이동' : '로그인 페이지로 이동');
       icon.className = 'fa-solid ' + (user ? 'fa-user-check' : 'fa-user');
       icon.setAttribute('aria-hidden', 'true');
       label.className = 'auth-user-label';
-      label.textContent = user ? user.id + '님' : '로그인';
+      label.textContent = isGuest(user) ? '게스트 모드' : user ? user.id + '님' : '로그인';
       button.replaceChildren(icon, label);
     });
     document.querySelectorAll('.listing-button').forEach(function (button) {
@@ -187,7 +227,7 @@
       if (!adminLink) {
         adminLink = document.createElement('a');
         adminLink.className = 'utility-admin';
-        adminLink.href = resolvePage('admin.html');
+      adminLink.href = isGuest(user) ? '/portfolio/admin' : resolvePage('admin.html');
         adminLink.innerHTML = '<i class="fa-solid fa-user-tie" aria-hidden="true"></i><span>관리자</span>';
         container.appendChild(adminLink);
       }
@@ -220,10 +260,10 @@
       logoutButton.setAttribute('aria-hidden', String(!user));
       notificationLink.hidden = !user;
       notificationLink.setAttribute('aria-hidden', String(!user));
-      const isAdmin = Boolean(user && String(user.role || '').toLowerCase() === 'admin');
-      adminLink.hidden = !isAdmin;
-      adminLink.setAttribute('aria-hidden', String(!isAdmin));
-      if (user) {
+      const canViewAdmin = Boolean(user && (String(user.role || '').toLowerCase() === 'admin' || isGuest(user)));
+      adminLink.hidden = !canViewAdmin;
+      adminLink.setAttribute('aria-hidden', String(!canViewAdmin));
+      if (user && !isGuest(user)) {
         fetch('/api/notifications', { credentials: 'same-origin' })
           .then(function (response) { return response.ok ? response.json() : null; })
           .then(function (payload) {
@@ -279,7 +319,14 @@
     document.documentElement.dataset.listingAccessReady = 'true';
     document.addEventListener('click', function (event) {
       const trigger = event.target.closest('.listing-button,[href$="#register-listing"]');
-      if (!trigger || getUser()) return;
+      if (!trigger) return;
+      if (isGuest()) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        showGuestReadOnlyMessage();
+        return;
+      }
+      if (getUser()) return;
       event.preventDefault();
       event.stopImmediatePropagation();
       showListingMemberGate();
@@ -292,7 +339,7 @@
         document.body.classList.remove('listing-gate-open');
       }
     });
-    if (!getUser() && window.location.hash === '#register-listing') {
+    if ((!getUser() || isGuest()) && window.location.hash === '#register-listing') {
       history.replaceState(null, '', window.location.pathname + window.location.search);
       showListingMemberGate();
     }
@@ -352,8 +399,12 @@
   window.ZipaiAuth = {
     getUser: getUser,
     login: login,
+    guestLogin: guestLogin,
     signup: signup,
     logout: logout,
+    isGuest: isGuest,
+    canMutate: function () { return Boolean(getUser()) && !isGuest(); },
+    showGuestReadOnlyMessage: showGuestReadOnlyMessage,
     refreshUser: refreshUser,
     get ready() { return authReady; },
     updateLoginButtons: updateLoginButtons,

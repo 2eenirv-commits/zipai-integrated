@@ -16,6 +16,7 @@
   const pageHero = document.getElementById('favoritePageHero');
   let items = [];
   let logged = false;
+  let guest = false;
 
   function price(property) {
     if (property.dealType === 'SALE') return '매매 ' + Number(property.salePrice || 0).toLocaleString('ko-KR') + '만원';
@@ -121,6 +122,10 @@
   }
 
   async function removeFavorite(id, button) {
+    if (guest) {
+      if (window.ZipaiAuth) window.ZipaiAuth.showGuestReadOnlyMessage();
+      return;
+    }
     button.disabled = true;
     const nextIds = items.map(function (item) { return Number(item.id); }).filter(function (value) { return value !== id; });
     try {
@@ -140,16 +145,18 @@
     if (window.ZipaiAuth) {
       await window.ZipaiAuth.ready;
       logged = !!window.ZipaiAuth.getUser();
+      guest = Boolean(window.ZipaiAuth.isGuest && window.ZipaiAuth.isGuest());
     }
     if (!logged) {
       render();
       return;
     }
     try {
-      const response = await fetch('/api/favorites', { credentials: 'same-origin' });
+      const response = await fetch(guest ? '/api/properties' : '/api/favorites', { credentials: 'same-origin' });
       if (!response.ok) throw new Error('찜 목록을 불러오지 못했습니다.');
       const payload = await response.json();
-      items = Array.isArray(payload.items) ? payload.items : [];
+      const loadedItems = Array.isArray(payload.items) ? payload.items : [];
+      items = guest ? loadedItems.slice(0, 3) : loadedItems;
     } catch (error) {
       summary.textContent = error.message;
     }

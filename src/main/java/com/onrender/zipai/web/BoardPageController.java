@@ -30,4 +30,9 @@ public class BoardPageController {
     public String admin() {
         return "admin/admin";
     }
+
+    @GetMapping("/portfolio/admin")
+    public String portfolioAdmin() {
+        return "admin/admin";
+    }
 }

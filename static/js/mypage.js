@@ -36,10 +36,38 @@
     userId.textContent = user.id + '님';
     loginTime.textContent = formatLoginTime(user.loginAt);
     auth.updateLoginButtons();
+    if (auth.isGuest && auth.isGuest(user)) {
+      renderGuestDemo();
+      return;
+    }
     loadFavorites();
     loadLatestDiagnosis();
     loadNotifications();
     loadInquiries();
+  }
+
+  function renderGuestDemo() {
+    userId.textContent = '포트폴리오 게스트';
+    favoriteCount.textContent = '3';
+    favoriteCountText.textContent = '3개 데모 매물';
+    if (unreadCount) unreadCount.textContent = '1';
+    if (inquiryCount) inquiryCount.textContent = '2';
+    if (readAllNotifications) readAllNotifications.hidden = true;
+    if (diagnosis) {
+      diagnosis.innerHTML = '<div class="mypage-diagnosis-score" data-level="safe"><strong>82</strong><span>점</span></div>'
+        + '<div><strong>비교적 안전</strong><p>안전 8 · 주의 2 · 위험 0 · 포트폴리오 데모</p><small>실제 회원 데이터가 아닙니다.</small></div>'
+        + '<a href="/defense/result">결과 화면 보기</a>';
+    }
+    if (notifications) {
+      notifications.innerHTML = '<article class="mypage-notification-item is-unread"><i class="fa-solid fa-bell" aria-hidden="true"></i>'
+        + '<div><strong>게스트 모드 안내</strong><p>서비스 기능을 둘러볼 수 있으며 변경 요청은 차단됩니다.</p><small>포트폴리오 데모 알림</small></div></article>';
+    }
+    if (inquiries) {
+      inquiries.innerHTML = '<article class="mypage-inquiry-item"><div><strong>매물 이용 문의 데모</strong><small>비식별 예시 · 답변 완료</small></div>'
+        + '<span class="mypage-inquiry-status" data-status="answered">답변 완료</span></article>'
+        + '<article class="mypage-inquiry-item"><div><strong>계약 안전 문의 데모</strong><small>비식별 예시 · 확인 중</small></div>'
+        + '<span class="mypage-inquiry-status" data-status="in_progress">확인 중</span></article>';
+    }
   }
 
   async function loadFavorites() {

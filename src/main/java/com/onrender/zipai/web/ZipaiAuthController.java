@@ -37,11 +37,22 @@ public class ZipaiAuthController {
 
     @GetMapping("/me")
     public Map<String, Object> me(HttpSession session) {
+        if (auth.isGuest(session)) {
+            return Map.of("authenticated", true, "user", auth.guestPublicUser());
+        }
         ZipaiUser user = auth.current(session);
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("authenticated", user != null);
         result.put("user", user == null ? null : auth.publicUser(user));
         return result;
+    }
+
+    @PostMapping("/guest")
+    public Map<String, Object> guest(HttpServletRequest request) {
+        HttpSession session = request.getSession(true);
+        auth.establishGuestSession(session);
+        request.changeSessionId();
+        return Map.of("user", auth.guestPublicUser());
     }
 
     @PostMapping("/signup")

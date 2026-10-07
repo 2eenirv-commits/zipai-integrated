@@ -14,6 +14,8 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class ZipaiAuthService {
     private static final String USER_ID = "ZIPAI_USER_ID";
+    public static final String GUEST_SESSION = "ZIPAI_GUEST";
+    public static final String GUEST_ROLE = "ROLE_GUEST";
     private static final int MAX_FAILED_LOGIN = 5;
 
     private final ZipaiUserRepository users;
@@ -25,6 +27,9 @@ public class ZipaiAuthService {
     }
 
     public ZipaiUser required(HttpSession session) {
+        if (isGuest(session)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "게스트 모드에서는 조회만 가능합니다.");
+        }
         Object raw = session.getAttribute(USER_ID);
         Long userId = null;
         if (raw instanceof Long value) userId = value;
@@ -55,7 +60,36 @@ public class ZipaiAuthService {
         if (user == null || user.getId() == null || !"active".equals(user.getStatus())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "사용할 수 없는 계정입니다.");
         }
+        session.removeAttribute(GUEST_SESSION);
         session.setAttribute(USER_ID, user.getId());
+    }
+
+    public void establishGuestSession(HttpSession session) {
+        session.removeAttribute(USER_ID);
+        session.setAttribute(GUEST_SESSION, Boolean.TRUE);
+    }
+
+    public boolean isGuest(HttpSession session) {
+        return session != null && Boolean.TRUE.equals(session.getAttribute(GUEST_SESSION));
+    }
+
+    public void requireGuest(HttpSession session) {
+        if (!isGuest(session)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "게스트 모드에서만 이용할 수 있습니다.");
+        }
+    }
+
+    public Map<String, Object> guestPublicUser() {
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("id", "portfolio_guest");
+        result.put("userId", null);
+        result.put("email", "guest@example.invalid");
+        result.put("phone", "");
+        result.put("role", "guest");
+        result.put("authority", GUEST_ROLE);
+        result.put("guest", true);
+        result.put("status", "active");
+        return result;
     }
 
     public ZipaiUser admin(HttpSession session) {
@@ -105,7 +139,7 @@ public class ZipaiAuthService {
         user.setUpdatedAt(now);
 
         user = users.save(user);
-        session.setAttribute(USER_ID, user.getId());
+        establishSession(user, session);
         return user;
     }
 
@@ -144,7 +178,7 @@ public class ZipaiAuthService {
         user.setUpdatedAt(LocalDateTime.now());
         users.save(user);
 
-        session.setAttribute(USER_ID, user.getId());
+        establishSession(user, session);
         return user;
     }
 

@@ -23,8 +23,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class SafetyFacilityImportService {
-    private static final int DEFAULT_BATCH_SIZE = 1000;
-    private static final int PROGRESS_INTERVAL = 10_000;
+    static final int DEFAULT_BATCH_SIZE = 1000;
 
     private static final String UPSERT_SQL = """
         INSERT INTO safe_infrastructure
@@ -45,22 +44,35 @@ public class SafetyFacilityImportService {
         """;
 
     private final JdbcTemplate jdbc;
+    private final int batchSize;
+    private final Path rejectedPoolOverride;
 
     public SafetyFacilityImportService(JdbcTemplate jdbc) {
+        this(jdbc, positiveIntEnv("SAFETY_IMPORT_BATCH_SIZE", DEFAULT_BATCH_SIZE), null);
+    }
+
+    SafetyFacilityImportService(JdbcTemplate jdbc, int batchSize, Path rejectedPoolOverride) {
+        if (batchSize < 1) {
+            throw new IllegalArgumentException("batchSize must be >= 1");
+        }
         this.jdbc = jdbc;
+        this.batchSize = batchSize;
+        this.rejectedPoolOverride = rejectedPoolOverride;
     }
 
     public ImportResult importCsv(Path path) throws IOException {
         ensureSchema();
 
-        int batchSize = positiveIntEnv("SAFETY_IMPORT_BATCH_SIZE", DEFAULT_BATCH_SIZE);
-        Path rejectedPool = rejectedPoolPath(path);
+        Path rejectedPool = rejectedPoolOverride == null
+            ? rejectedPoolPath(path)
+            : rejectedPoolOverride;
         Files.createDirectories(rejectedPool.toAbsolutePath().getParent());
         Instant startedAt = Instant.now();
 
         int read = 0;
         int succeeded = 0;
         int errors = 0;
+        int batchNumber = 0;
 
         try (
             BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8);
@@ -98,9 +110,18 @@ public class SafetyFacilityImportService {
                     batch.add(new PendingRow(read, row));
 
                     if (batch.size() >= batchSize) {
-                        BatchResult result = flushBatch(batch, rejectedWriter);
+                        batchNumber++;
+                        BatchResult result = flushBatch(batchNumber, batch, rejectedWriter);
                         succeeded += result.succeeded();
                         errors += result.errors();
+                        printBatchProgress(
+                            batchNumber,
+                            batch,
+                            read,
+                            succeeded,
+                            errors,
+                            startedAt
+                        );
                         batch.clear();
                     }
                 } catch (Exception error) {
@@ -114,15 +135,21 @@ public class SafetyFacilityImportService {
                     );
                 }
 
-                if (read % PROGRESS_INTERVAL == 0) {
-                    printProgress(read, succeeded, errors, startedAt);
-                }
             }
 
             if (!batch.isEmpty()) {
-                BatchResult result = flushBatch(batch, rejectedWriter);
+                batchNumber++;
+                BatchResult result = flushBatch(batchNumber, batch, rejectedWriter);
                 succeeded += result.succeeded();
                 errors += result.errors();
+                printBatchProgress(
+                    batchNumber,
+                    batch,
+                    read,
+                    succeeded,
+                    errors,
+                    startedAt
+                );
             }
         }
 
@@ -160,7 +187,11 @@ public class SafetyFacilityImportService {
             """);
     }
 
-    private BatchResult flushBatch(List<PendingRow> pendingRows, BufferedWriter rejectedWriter)
+    private BatchResult flushBatch(
+        int batchNumber,
+        List<PendingRow> pendingRows,
+        BufferedWriter rejectedWriter
+    )
         throws IOException {
 
         List<Row> rows = pendingRows.stream().map(PendingRow::row).toList();
@@ -174,6 +205,18 @@ public class SafetyFacilityImportService {
             );
             return new BatchResult(rows.size(), 0);
         } catch (DataAccessException batchError) {
+            int firstRecord = pendingRows.getFirst().recordNumber();
+            int lastRecord = pendingRows.getLast().recordNumber();
+            System.err.printf(
+                "Safety import batch failed: batch=%d records=%d-%d size=%d error=%s; "
+                    + "retrying rows individually%n",
+                batchNumber,
+                firstRecord,
+                lastRecord,
+                pendingRows.size(),
+                rootMessage(batchError)
+            );
+
             // One bad row should not hide the rest of the batch.
             // Re-run this batch row-by-row only when a batch fails, so the exact bad row is logged.
             int succeeded = 0;
@@ -607,7 +650,9 @@ public class SafetyFacilityImportService {
         return "\"" + safe.replace("\"", "\"\"") + "\"";
     }
 
-    private static void printProgress(
+    private static void printBatchProgress(
+        int batchNumber,
+        List<PendingRow> batch,
         int read,
         int succeeded,
         int errors,
@@ -615,9 +660,16 @@ public class SafetyFacilityImportService {
     ) {
         long seconds = Math.max(1L, Duration.between(startedAt, Instant.now()).toSeconds());
         long rowsPerSecond = read / seconds;
+        int firstRecord = batch.getFirst().recordNumber();
+        int lastRecord = batch.getLast().recordNumber();
 
         System.out.printf(
-            "Safety import progress: read=%d succeeded=%d rejected=%d speed=%d rows/s%n",
+            "Safety import progress: batch=%d records=%d-%d batchSize=%d "
+                + "read=%d succeeded=%d rejected=%d speed=%d rows/s%n",
+            batchNumber,
+            firstRecord,
+            lastRecord,
+            batch.size(),
             read,
             succeeded,
             errors,

@@ -51,10 +51,17 @@ public final class ImportSafetyFacilities {
 
     private static DriverManagerDataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setUrl(required("DB_URL"));
+        dataSource.setUrl(withBatchRewrite(required("DB_URL")));
         dataSource.setUsername(required("DB_USERNAME"));
         dataSource.setPassword(required("DB_PASSWORD"));
         return dataSource;
+    }
+
+    static String withBatchRewrite(String url) {
+        if (url.matches("(?i).*([?&])rewriteBatchedStatements=[^&]*.*")) {
+            return url;
+        }
+        return url + (url.contains("?") ? "&" : "?") + "rewriteBatchedStatements=true";
     }
 
     private static String required(String name) {

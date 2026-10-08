@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -47,6 +48,7 @@ public class SafetyFacilityImportService {
     private final int batchSize;
     private final Path rejectedPoolOverride;
 
+    @Autowired
     public SafetyFacilityImportService(JdbcTemplate jdbc) {
         this(jdbc, positiveIntEnv("SAFETY_IMPORT_BATCH_SIZE", DEFAULT_BATCH_SIZE), null);
     }

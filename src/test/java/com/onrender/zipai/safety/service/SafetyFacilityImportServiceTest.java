@@ -22,6 +22,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.mockito.ArgumentCaptor;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ParameterizedPreparedStatementSetter;
 
@@ -29,6 +30,19 @@ class SafetyFacilityImportServiceTest {
 
     @TempDir
     Path tempDir;
+
+    @Test
+    void springContextCreatesServiceWithJdbcTemplateConstructor() {
+        try (AnnotationConfigApplicationContext context =
+                 new AnnotationConfigApplicationContext()) {
+            context.registerBean(JdbcTemplate.class, () -> mock(JdbcTemplate.class));
+            context.register(SafetyFacilityImportService.class);
+            context.refresh();
+
+            assertTrue(context.containsBean("safetyFacilityImportService"));
+            assertTrue(context.getBean(SafetyFacilityImportService.class) != null);
+        }
+    }
 
     @Test
     void importsWithJdbcBatchesAndKeepsIdempotentUpsertSql() throws Exception {
